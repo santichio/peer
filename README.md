@@ -31,6 +31,7 @@ a self-contained folder `skills/<name>/SKILL.md` (no topic subfolder), following
 | `prompts/<topic>/`         | Standalone prompts and prompt templates.                        |
 | `agents/<topic>/`          | Agent definitions and configurations.                           |
 | `references/<topic>/`      | Lists, catalogs, and preferences.                               |
+| `scripts/<topic>/`         | Executable helper scripts (bash, python, etc.) — not Markdown docs. |
 | `INDEX.md`                 | Hand-maintained catalog of every document.                      |
 | `CONTRIBUTING.md`          | How to add documents and follow the git workflow.               |
 | `CHANGELOG.md`             | Repo-level history; each category also has its own.             |
@@ -55,6 +56,8 @@ flowchart TD
     root --> prompts["prompts/"]
     root --> agents["agents/"]
     root --> references["references/"]
+    root --> scripts["scripts/"]
+    scripts --> sccl["CHANGELOG.md"]
     github --> pr["pull_request_template.md"]
     github --> owners["CODEOWNERS"]
     templates --> base["base-document.md"]
@@ -85,6 +88,12 @@ Every **non-skill** document (reference, prompt, agent, template) **must**:
 > them with the [`skill-creator`](skills/skill-creator/SKILL.md) skill, not the base
 > template. They are still listed in `INDEX.md` and logged in `skills/CHANGELOG.md` (by
 > date, since they have no version). The metadata reference below does **not** apply to skills.
+>
+> **Scripts are also an exception.** Files under `scripts/<topic>/` are executable helpers
+> (bash, python, etc.), not Markdown documents — they do not use the base template. Each
+> script carries a header comment with `id` (filename stem), `description`, `version`
+> (SemVer), and `owner`. They are listed in `INDEX.md` and logged in `scripts/CHANGELOG.md`
+> by `id`.
 
 ### Metadata reference
 

@@ -30,6 +30,12 @@ skill is a folder `skills/<name>/SKILL.md` in the [SKILL.md format](skills/skill
 bundled `scripts/ references/ assets/`. Authored via the `skill-creator` skill. Don't
 modify anything under `skills/skill-creator/`.
 
+**Scripts are also an exception** — files under `scripts/<topic>/` are executable helpers
+(bash, python, etc.), not Markdown. Metadata lives in a **header comment** at the top of
+the file (`id` matches the filename stem, `description`, `version` SemVer, `owner`); they
+do not use YAML frontmatter or the base template. List them in `INDEX.md` (Scripts section)
+and log changes in `scripts/CHANGELOG.md` by `id` like other categories.
+
 ## Layout
 
 - **Non-skill docs:** `<category>/<topic>/<id>.md` — categories `prompts/ agents/
@@ -37,6 +43,8 @@ modify anything under `skills/skill-creator/`.
   `references/engineering/`). `templates/` holds the base template directly.
 - **Skills:** flat `skills/<name>/SKILL.md` — one self-contained folder per skill, no
   topic subfolder.
+- **Scripts:** `scripts/<topic>/<id>.{sh,py,...}` — executable helpers; metadata in a
+  header comment, not YAML frontmatter.
 
 ## Creating a new document
 

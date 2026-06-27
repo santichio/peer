@@ -24,3 +24,6 @@ Based on [Keep a Changelog](https://keepachangelog.com/).
   frontmatter) as an exception to the base-document standard. `README.md`, `CLAUDE.md`,
   `CONTRIBUTING.md`, `templates/base-document.md`, and `INDEX.md` updated accordingly;
   `skills/CHANGELOG.md` switched to by-date entries.
+- Added top-level `scripts/` category for executable helpers (bash, python, etc.) — not
+  Markdown docs; metadata lives in a header comment, not YAML frontmatter. Registered in
+  `README.md`, `INDEX.md`, `CLAUDE.md`, and seeded `scripts/CHANGELOG.md`.

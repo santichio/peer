@@ -37,6 +37,15 @@ Skills follow the [SKILL.md format](skills/skill-creator/SKILL.md) (folder per s
 | --- | ----- | ------- | ------ | ----------- |
 | [`base-document`](templates/base-document.md) | Base Document Template | 1.0.0 | active | The canonical template every document in this repo copies from. |
 
+## Scripts
+
+Executable helpers (bash, python, etc.) — not Markdown documents. Each script carries
+a header comment with `id`, `description`, `version`, and `owner`.
+
+| ID  | Path | Version | Status | Description |
+| --- | ---- | ------- | ------ | ----------- |
+| _none yet_ | — | — | — | — |
+
 ## References
 
 | ID  | Title | Version | Status | Description |

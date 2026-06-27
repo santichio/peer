@@ -11,6 +11,11 @@ before contributing.
 > `skills/<name>/SKILL.md` (folder per skill, `name`/`description` frontmatter, no
 > version/status). Then add it to `INDEX.md` and `skills/CHANGELOG.md` (by date).
 
+> **Adding a script?** Scripts (`scripts/<topic>/<id>.{sh,py,...}`) are executables, not
+> Markdown documents — they don't use the base template either. Put metadata in a header
+> comment (`id`, `description`, `version` SemVer, `owner`), register the script in
+> `INDEX.md` under **Scripts**, and log it in `scripts/CHANGELOG.md` by `id`.
+
 1. Copy [`templates/base-document.md`](templates/base-document.md) into the right
    `<category>/<topic>/` folder — category is `skills/`, `prompts/`, `agents/`, or
    `references/`; topic groups related docs (e.g. `references/git/`). Create the topic

@@ -115,7 +115,7 @@ done
 ## This repo follows its own git policy
 
 The git references under `references/git/` are the policy this repo is governed by, and
-`skills/gitflow-workflow/SKILL.md` is the operational procedure. When making changes here:
+`skills/gitflow/SKILL.md` is the operational procedure. When making changes here:
 
 - Branch from `develop` (not `main`); both are default branches. Name branches
   `feature/<issue_id>-<name>` (or `hotfix/`). See `references/git/git-branching-strategy.md`.

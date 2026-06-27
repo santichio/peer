@@ -49,7 +49,7 @@ flowchart TD
     root --> skills["skills/"]
     skills --> scl["CHANGELOG.md"]
     skills --> sc["skill-creator/SKILL.md"]
-    skills --> sgf["gitflow-workflow/SKILL.md"]
+    skills --> sgf["gitflow/SKILL.md"]
     skills --> sprd["prd/SKILL.md"]
     skills --> sralph["ralph/SKILL.md"]
     root --> prompts["prompts/"]

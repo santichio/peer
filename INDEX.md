@@ -14,7 +14,7 @@ Skills follow the [SKILL.md format](skills/skill-creator/SKILL.md) (folder per s
 | Name | Title | Version | Status | Description |
 | --- | ----- | ------- | ------ | ----------- |
 | [`skill-creator`](skills/skill-creator/SKILL.md) | Skill Creator | — | — | Create new skills, modify and improve existing skills, and measure skill performance with evals. |
-| [`gitflow-workflow`](skills/gitflow-workflow/SKILL.md) | Gitflow Workflow | — | — | Drive a code change end-to-end through gitflow using git and the GitHub CLI; stops at PR-ready. |
+| [`gitflow`](skills/gitflow/SKILL.md) | Gitflow Workflow | — | — | Drive a code change end-to-end through gitflow using git and the GitHub CLI; stops at PR-ready. |
 | [`prd`](skills/prd/SKILL.md) | PRD Generator | — | — | Generate a Product Requirements Document for a new feature. |
 | [`ralph`](skills/ralph/SKILL.md) | Ralph PRD Converter | — | — | Convert a PRD to the prd.json format for the Ralph autonomous agent system. |
 

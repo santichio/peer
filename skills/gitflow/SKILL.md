@@ -1,5 +1,5 @@
 ---
-name: gitflow-workflow
+name: gitflow
 description: Drive a code change end-to-end through gitflow using git and the GitHub CLI — sync and create a branch, run quality gates, commit with Conventional Commits, push, and open a pull request. Use this whenever the user wants to start a feature/hotfix/release, commit and push work, "follow gitflow", or open/prepare a PR, even if they don't say "gitflow". Covers feature, hotfix, and release flows. It stops at "PR ready for review" and never self-merges.
 ---
 

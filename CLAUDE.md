@@ -133,6 +133,21 @@ The git references under `references/git/` are the policy this repo is governed 
 - **Do not self-merge.** Open a PR (base `develop`) and stop for review —
   `references/git/git-code-review.md` requires ≥1 approval; `.github/CODEOWNERS` routes it.
 
+## Reusable workflows
+
+`.github/workflows/` ships two reusable workflows that consumer repos use:
+
+- **`sync-skills.yml`** — reusable `workflow_call` workflow that syncs selected
+  `skills/<name>/` folders from this repo into a consumer's destination dir
+  (default `.claude/skills`). Modes: `pull-request` (default) or `commit`. Inputs
+  documented in [`references/automation/sync-skills-action.md`](references/automation/sync-skills-action.md).
+- **`lint-skills.yml`** — CI guard. Runs on every PR and push touching `skills/`; calls
+  `.github/scripts/lint-skill.py` to assert each `skills/<name>/SKILL.md` has YAML
+  frontmatter, a `name:` matching the folder, and a non-empty `description:`.
+
+Until a release is tagged, consumers pin to `@develop` or a commit sha — the
+`@v1` form will work after the first tag.
+
 ## Conventions quick reference
 
 - `id` and filenames are kebab-case; `id` == filename stem.

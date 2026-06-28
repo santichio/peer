@@ -46,6 +46,17 @@ a header comment with `id`, `description`, `version`, and `owner`.
 | --- | ---- | ------- | ------ | ----------- |
 | _none yet_ | — | — | — | — |
 
+## Automation
+
+Reusable CI workflows and CI helper scripts. Workflows are YAML — they aren't
+versioned the same way docs are, so version/status show as `—`.
+
+| Name | Path | Version | Status | Description |
+| ---- | ---- | ------- | ------ | ----------- |
+| `sync-skills` | [.github/workflows/sync-skills.yml](.github/workflows/sync-skills.yml) | — | — | Reusable `workflow_call` workflow that syncs `skills/<name>/` from this repo into a consumer's destination directory. |
+| `lint-skills` | [.github/workflows/lint-skills.yml](.github/workflows/lint-skills.yml) | — | — | CI workflow that validates every `skills/<name>/SKILL.md` has valid frontmatter and a matching `name`. |
+| `lint-skill.py` | [.github/scripts/lint-skill.py](.github/scripts/lint-skill.py) | — | — | Python helper that validates one `SKILL.md` file; invoked by `lint-skills`. |
+
 ## References
 
 | ID  | Title | Version | Status | Description |
@@ -61,3 +72,4 @@ a header comment with `id`, `description`, `version`, and `owner`.
 | [`tech-stack-database`](references/engineering/tech-stack-database.md) | Tech Stack — Database & Documentation | 1.0.0 | active | Data layer — PostgreSQL, Firestore real-time, Redis cache, and Mermaid diagrams-as-code. |
 | [`tech-stack-devops`](references/engineering/tech-stack-devops.md) | Tech Stack — DevOps | 1.0.0 | active | DevOps toolchain — GitHub, GitHub Actions, NPM, Docker, Kubernetes, and Helm. |
 | [`code-style`](references/engineering/code-style.md) | Code Style — ESLint & Prettier | 1.0.0 | active | The preferred ESLint + Prettier configuration for Node.js / TypeScript projects. |
+| [`sync-skills-action`](references/automation/sync-skills-action.md) | Sync Skills Action — Consumer Guide | 1.0.0 | active | Consumer guide for the reusable sync-skills GitHub Action — inputs, examples, pinning, and troubleshooting. |

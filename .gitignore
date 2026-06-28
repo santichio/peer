@@ -1,2 +1,4 @@
 .DS_Store
 *.temp.md
+# Claude Code installed-skill copies (source lives in skills/)
+.claude/skills/

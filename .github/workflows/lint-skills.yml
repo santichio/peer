@@ -1,0 +1,58 @@
+# Validates every `skills/<name>/SKILL.md`:
+#   - Has YAML frontmatter delimited by `---`.
+#   - `name:` value equals the parent folder name.
+#   - `description:` is present and non-empty.
+# Fails the job with `::error file=...::` annotations on any violation.
+
+name: Lint Skills
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'skills/**/SKILL.md'
+      - '.github/workflows/lint-skills.yml'
+  pull_request:
+    paths:
+      - 'skills/**/SKILL.md'
+      - '.github/workflows/lint-skills.yml'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install PyYAML
+        run: pip install --quiet pyyaml
+
+      - name: Validate SKILL.md files
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          mapfile -t files < <(printf '%s\n' skills/*/SKILL.md | sort)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "::error::No skills/*/SKILL.md files found."
+            exit 1
+          fi
+
+          fail=0
+          for f in "${files[@]}"; do
+            folder="$(basename "$(dirname "$f")")"
+            if ! python3 .github/scripts/lint-skill.py "$f" "$folder"; then
+              fail=1
+            fi
+          done
+
+          if [ "$fail" -ne 0 ]; then
+            echo "::error::One or more SKILL.md files failed validation."
+            exit 1
+          fi
+          echo "All ${#files[@]} skill(s) passed validation."

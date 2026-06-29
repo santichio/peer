@@ -1,0 +1,174 @@
+# Reusable workflow: sync `skills/<name>/` folders from santichio/peer into a
+# consumer repository's destination directory.
+#
+# Consumer example (in <consumer-repo>/.github/workflows/sync-skills.yml):
+#
+#   on:
+#     schedule:
+#       - cron: "0 6 * * 1"   # weekly, Monday 06:00 UTC
+#     workflow_dispatch:
+#   jobs:
+#     sync:
+#       uses: santichio/peer/.github/workflows/sync-skills.yml@v1
+#       with:
+#         skills: gitflow,prd,ralph
+#         mode: pull-request
+#       permissions:
+#         contents: write
+#         pull-requests: write
+#
+# Until a tagged release exists, pin to a sha or a branch (e.g. @develop).
+
+name: Sync Skills
+
+on:
+  workflow_call:
+    inputs:
+      skills:
+        description: 'CSV of skill folder names to sync, or "all".'
+        type: string
+        default: all
+        required: false
+      dest:
+        description: 'Destination directory in the consumer repo.'
+        type: string
+        default: .claude/skills
+        required: false
+      ref:
+        description: 'Ref of santichio/peer to sync from (tag, branch, or sha). Empty = default branch.'
+        type: string
+        default: ''
+        required: false
+      mode:
+        description: 'How to apply changes: "pull-request" (default) or "commit".'
+        type: string
+        default: pull-request
+        required: false
+      branch:
+        description: 'Branch name for pull-request mode.'
+        type: string
+        default: chore/sync-skills
+        required: false
+      delete-stale:
+        description: 'Use rsync --delete so renames propagate cleanly.'
+        type: boolean
+        default: true
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate inputs
+        shell: bash
+        env:
+          MODE: ${{ inputs.mode }}
+          DEST: ${{ inputs.dest }}
+        run: |
+          set -euo pipefail
+          case "$MODE" in
+            pull-request|commit) ;;
+            *) echo "::error::Invalid mode '$MODE'. Use 'pull-request' or 'commit'."; exit 1 ;;
+          esac
+          case "$DEST" in
+            /*|*..*|"") echo "::error::Invalid dest '$DEST'. Must be a relative path, no '..'."; exit 1 ;;
+          esac
+
+      - name: Checkout consumer repo
+        uses: actions/checkout@v4
+
+      - name: Checkout peer skills (sparse)
+        uses: actions/checkout@v4
+        with:
+          repository: santichio/peer
+          ref: ${{ inputs.ref }}
+          path: .peer-source
+          sparse-checkout: skills
+          sparse-checkout-cone-mode: true
+
+      - name: Sync skills
+        shell: bash
+        env:
+          SKILLS: ${{ inputs.skills }}
+          DEST: ${{ inputs.dest }}
+          DELETE_STALE: ${{ inputs.delete-stale }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          mkdir -p "$DEST"
+          rsync_args=(-a)
+          if [ "$DELETE_STALE" = "true" ]; then
+            rsync_args+=(--delete)
+          fi
+
+          synced=()
+          if [ "$SKILLS" = "all" ]; then
+            for src in .peer-source/skills/*/; do
+              name="$(basename "$src")"
+              mkdir -p "$DEST/$name"
+              rsync "${rsync_args[@]}" "$src" "$DEST/$name/"
+              synced+=("$name")
+            done
+          else
+            IFS=',' read -ra LIST <<< "$SKILLS"
+            for raw in "${LIST[@]}"; do
+              name="$(echo "$raw" | xargs)"
+              [ -n "$name" ] || continue
+              src=".peer-source/skills/$name/"
+              if [ ! -d "$src" ]; then
+                echo "::error::Skill not found in santichio/peer: $name"
+                exit 1
+              fi
+              mkdir -p "$DEST/$name"
+              rsync "${rsync_args[@]}" "$src" "$DEST/$name/"
+              synced+=("$name")
+            done
+          fi
+
+          if [ "${#synced[@]}" -eq 0 ]; then
+            echo "::warning::No skills matched the selection."
+          else
+            echo "Synced ${#synced[@]} skill(s): ${synced[*]}"
+          fi
+          rm -rf .peer-source
+
+      - name: Commit changes
+        if: inputs.mode == 'commit'
+        shell: bash
+        env:
+          DEST: ${{ inputs.dest }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- "$DEST"
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: sync skills from santichio/peer"
+          git push
+
+      - name: Open pull request
+        if: inputs.mode == 'pull-request'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: ${{ inputs.branch }}
+          title: 'chore: sync skills from santichio/peer'
+          commit-message: 'chore: sync skills from santichio/peer'
+          body: |
+            Synced skills from `santichio/peer`.
+
+            - **Ref**: `${{ inputs.ref || 'default branch' }}`
+            - **Skills**: `${{ inputs.skills }}`
+            - **Destination**: `${{ inputs.dest }}`
+
+            Auto-generated by the reusable `sync-skills` workflow.
+          add-paths: ${{ inputs.dest }}
+          delete-branch: true
+          labels: skills,automation

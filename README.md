@@ -35,7 +35,8 @@ a self-contained folder `skills/<name>/SKILL.md` (no topic subfolder), following
 | `INDEX.md`                 | Hand-maintained catalog of every document.                      |
 | `CONTRIBUTING.md`          | How to add documents and follow the git workflow.               |
 | `CHANGELOG.md`             | Repo-level history; each category also has its own.             |
-| `.github/`                 | PR template and `CODEOWNERS` for governance.                    |
+| `.github/`                 | PR template, `CODEOWNERS`, reusable workflows, and CI helper scripts. |
+| `.github/workflows/`       | Reusable GitHub Actions (`sync-skills`, `lint-skills`).         |
 | `templates/base-document.md` | The template all **non-skill** documents copy from.           |
 
 ```mermaid
@@ -62,6 +63,11 @@ flowchart TD
     sralphdir --> sralphsh["ralph.sh"]
     github --> pr["pull_request_template.md"]
     github --> owners["CODEOWNERS"]
+    github --> ghwf["workflows/"]
+    ghwf --> ghsync["sync-skills.yml"]
+    ghwf --> ghlint["lint-skills.yml"]
+    github --> ghscripts["scripts/"]
+    ghscripts --> ghlintpy["lint-skill.py"]
     templates --> base["base-document.md"]
     templates --> tcl["CHANGELOG.md"]
     references --> rcl["CHANGELOG.md"]
@@ -69,6 +75,8 @@ flowchart TD
     rgit --> rdocs["git-*.md"]
     references --> reng["engineering/"]
     reng --> rengdocs["tech-stack-*.md · code-style.md"]
+    references --> rauto["automation/"]
+    rauto --> rautodocs["sync-skills-action.md"]
     prompts --> pcl["CHANGELOG.md"]
     prompts --> pgit["git/"]
     agents --> acl["CHANGELOG.md"]

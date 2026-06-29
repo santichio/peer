@@ -4,6 +4,19 @@ All notable changes to documents in this directory. Based on
 [Keep a Changelog](https://keepachangelog.com/); documents use [SemVer](https://semver.org/).
 Entries are grouped by document `id`, newest version first.
 
+## `sync-skills-action`
+
+### [1.0.1] — 2026-06-29
+#### Changed
+- Added a "How the sync works" section explaining the pull-based model, when consumers
+  see updates, and how `ref` selects which commit of `peer` is read. Includes a
+  `sequenceDiagram` of a single run.
+
+### [1.0.0] — 2026-06-27
+#### Added
+- Consumer guide for the reusable `sync-skills` GitHub Action: inputs table, scheduled
+  and on-demand examples, pinning strategy, mode comparison, and troubleshooting.
+
 ## `tech-stack-overview`
 
 ### [1.0.0] — 2026-06-27

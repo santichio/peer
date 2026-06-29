@@ -72,4 +72,4 @@ versioned the same way docs are, so version/status show as `—`.
 | [`tech-stack-database`](references/engineering/tech-stack-database.md) | Tech Stack — Database & Documentation | 1.0.0 | active | Data layer — PostgreSQL, Firestore real-time, Redis cache, and Mermaid diagrams-as-code. |
 | [`tech-stack-devops`](references/engineering/tech-stack-devops.md) | Tech Stack — DevOps | 1.0.0 | active | DevOps toolchain — GitHub, GitHub Actions, NPM, Docker, Kubernetes, and Helm. |
 | [`code-style`](references/engineering/code-style.md) | Code Style — ESLint & Prettier | 1.0.0 | active | The preferred ESLint + Prettier configuration for Node.js / TypeScript projects. |
-| [`sync-skills-action`](references/automation/sync-skills-action.md) | Sync Skills Action — Consumer Guide | 1.0.0 | active | Consumer guide for the reusable sync-skills GitHub Action — inputs, examples, pinning, and troubleshooting. |
+| [`sync-skills-action`](references/automation/sync-skills-action.md) | Sync Skills Action — Consumer Guide | 1.0.1 | active | Consumer guide for the reusable sync-skills GitHub Action — inputs, examples, pinning, and troubleshooting. |

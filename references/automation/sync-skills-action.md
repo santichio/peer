@@ -2,11 +2,11 @@
 title: Sync Skills Action — Consumer Guide
 id: sync-skills-action
 type: reference
-version: 1.0.0
+version: 1.0.1
 status: active
 owner: gabriel@santich.io
 created: 2026-06-27
-updated: 2026-06-27
+updated: 2026-06-29
 tags: [github-actions, automation, skills, sync, workflow-call]
 description: Consumer guide for the reusable sync-skills GitHub Action — inputs, examples, pinning, and troubleshooting.
 related: []
@@ -26,6 +26,59 @@ fetching, copying, and either commits the changes or opens a pull request.
 Use it whenever you want a consumer repo to track skills published from `peer` without
 hand-copying files. Skills land in your repo as plain files — no runtime dependency on
 this repo at execution time.
+
+## How the sync works
+
+The model is **pull-based**: this repo never pushes into a consumer. The consumer
+declares a workflow in **its own** `.github/workflows/` that calls `sync-skills` and
+decides **when** it runs (schedule, manual dispatch, or both). A run does five things:
+
+1. Validates inputs (`mode`, `dest`).
+2. Checks out the consumer repo so changes can be written into it.
+3. Sparse-checks out `santichio/peer` at the chosen `ref` — only the `skills/` tree.
+4. `rsync`s each selected skill into `<dest>/<name>/`. With `delete-stale: true`
+   (default), renames and removals in `peer` propagate to the consumer.
+5. Applies the change in the consumer per `mode` — opens/updates a PR
+   (`pull-request`, default) or commits straight to the current branch (`commit`).
+
+### When does a consumer see a change?
+
+Only when **its own** scheduled run fires (or someone clicks "Run workflow"). Until
+then, the consumer's `<dest>/` is whatever the last sync wrote. Pick the cadence in
+the consumer workflow — weekly cron is the canonical example, daily/hourly/manual-only
+are all valid.
+
+### What does "latest" mean?
+
+The `ref` input decides. It controls **which commit of `peer`** the sync reads from:
+
+| `ref`                | Resolves to                                     | Trade-off                                  |
+| -------------------- | ----------------------------------------------- | ------------------------------------------ |
+| _empty_ (default)    | `peer`'s default branch tip at run time         | Bleeding edge — moves without warning.     |
+| `v1.2.0` (tag)       | That tag's commit                               | Frozen until the consumer bumps the pin.   |
+| `<full-sha>`         | That exact commit                               | Same guarantees as a tag, no naming.       |
+| `develop` / branch   | The branch tip at run time                      | Tracks a moving branch.                    |
+
+See [Pinning strategy](#pinning-strategy) below for which to use when.
+
+```mermaid
+sequenceDiagram
+    participant Cron as Consumer cron / dispatch
+    participant CW as Consumer workflow
+    participant SW as sync-skills (this repo)
+    participant Peer as santichio/peer @ ref
+    participant Repo as Consumer repo
+
+    Cron->>CW: trigger
+    CW->>SW: workflow_call (skills, dest, ref, mode)
+    SW->>Peer: sparse checkout skills/
+    SW->>Repo: rsync into <dest>/
+    alt mode=pull-request
+        SW->>Repo: open/update PR for human review
+    else mode=commit
+        SW->>Repo: commit + push to current branch
+    end
+```
 
 ## Inputs
 

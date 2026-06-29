@@ -1,0 +1,5 @@
+# Code owners — every change requires review/approval from the owner.
+# See references/git-code-review.md for the review policy.
+# Syntax: <path pattern> <owner handle(s)>
+
+* @santichio

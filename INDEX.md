@@ -44,7 +44,7 @@ a header comment with `id`, `description`, `version`, and `owner`.
 
 | ID  | Path | Version | Status | Description |
 | --- | ---- | ------- | ------ | ----------- |
-| _none yet_ | — | — | — | — |
+| [`ralph`](scripts/ralph/ralph.sh) | scripts/ralph/ralph.sh | 1.0.0 | active | Long-running AI agent loop that runs amp or Claude Code over a PRD until it signals completion. |
 
 ## References
 

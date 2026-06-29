@@ -58,6 +58,8 @@ flowchart TD
     root --> references["references/"]
     root --> scripts["scripts/"]
     scripts --> sccl["CHANGELOG.md"]
+    scripts --> sralphdir["ralph/"]
+    sralphdir --> sralphsh["ralph.sh"]
     github --> pr["pull_request_template.md"]
     github --> owners["CODEOWNERS"]
     templates --> base["base-document.md"]

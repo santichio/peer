@@ -101,6 +101,55 @@ and log changes in `scripts/CHANGELOG.md` by `id` like other categories.
 > The repo-root `CHANGELOG.md` is only for repo-level changes (README, INDEX structure,
 > governance files) — not for individual document edits, which go in the category changelog.
 
+## Reconciling a user-edited document
+
+When the **user** edits a document directly (in their editor, by renaming a file, by
+moving a folder) and asks you to "tidy up" or "register" it, your job is
+**reconciliation, not authoring**. Treat the user's content as authoritative.
+
+**Hard rule — do not modify the body of the document.** Leave headings, prose, code
+blocks, and diagrams exactly as the user wrote them. The only edits you may make to the
+file itself are the minimum frontmatter fixes required by repo policy (see step 4 below).
+
+1. **Read the file and understand what changed.** Compare against `git diff` if a prior
+   version is on disk. Note: content edits, frontmatter edits, filename change, folder
+   move, or any combination.
+2. **Verify directory placement.** The file must live under the correct category and
+   topic:
+   - `references/<topic>/`, `prompts/<topic>/`, `agents/<topic>/` — non-skill docs
+     grouped by topic.
+   - `templates/` — base template only.
+   - `skills/<name>/SKILL.md` — flat, no topic subfolder.
+   - `scripts/<topic>/<id>.{sh,py,...}` — executable helpers.
+
+   If the file is in the wrong place, `git mv` it to the right path. Confirm with the
+   user before moving if the correct topic is ambiguous.
+3. **Verify `id` ↔ filename match.** For non-skill docs the `id` frontmatter field must
+   equal the filename stem. If the user changed one without the other, reconcile —
+   prefer keeping the user's evident intent and ask when ambiguous.
+4. **Minimum frontmatter fix-ups (only if required).** If the user changed the body but
+   didn't bump `version` or update `updated`, do so per SemVer (MAJOR/MINOR/PATCH) and
+   set `updated` to today. Do not touch any other frontmatter field unless the user's
+   change made it inconsistent (e.g. they deprecated a doc but forgot `deprecated_on`).
+5. **Update the registry — `INDEX.md`.** Sync the row's visible fields (`version`,
+   `title`, `status`, `description`, path). The description must remain verbatim from
+   the frontmatter. Add/remove the row if a doc was added/removed.
+6. **Update `README.md` only if the structure changed** — a new category or topic
+   subfolder appeared, or one disappeared. Add/remove it in the structure table and the
+   Mermaid diagram.
+7. **Log the change in the directory `CHANGELOG.md`.** Add a new version entry at the
+   top of that document's `` ## `<id>` `` block (newest first), under the right category
+   — Added / Changed / Deprecated / Removed / Fixed / Security. Summarize what the user
+   changed in one line. For governance file edits (`README.md`, `INDEX.md`, `CLAUDE.md`,
+   `CONTRIBUTING.md`) log in the repo-root `CHANGELOG.md` instead.
+8. **Verify cross-links.** If the file moved or was renamed, run the link checker from
+   the [Cross-links](#cross-links) section and fix any `BROKEN:` paths in *other* files
+   (still not the user-edited file's body unless a link there now points nowhere).
+
+If a step would require editing the user's body to keep things consistent (e.g. the user
+moved a referenced doc but didn't update an in-body link), surface it to the user and
+ask before touching the body.
+
 ## Cross-links
 
 Documents reference each other with **relative Markdown links** and via the `related`

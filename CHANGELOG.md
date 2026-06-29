@@ -35,3 +35,7 @@ Based on [Keep a Changelog](https://keepachangelog.com/).
   `.github/scripts/lint-skill.py`.
 - Added `sync-skills-action` consumer reference guide under `references/automation/`
   (new topic subfolder) — inputs table, examples, pinning strategy, troubleshooting.
+- `CLAUDE.md`: documented the "reconciling a user-edited document" workflow — Claude's
+  housekeeping responsibilities (placement, INDEX/README/CHANGELOG sync, cross-link
+  verification) when the user edits a doc directly, with an explicit "do not modify the
+  body" rule.

@@ -112,6 +112,28 @@ Claude reads only the relevant reference file.
 
 This goes without saying, but skills must not contain malware, exploit code, or any content that could compromise system security. A skill's contents should not surprise the user in their intent if described. Don't go along with requests to create misleading skills or skills designed to facilitate unauthorized access, data exfiltration, or other malicious activities. Things like a "roleplay as an XYZ" are OK though.
 
+#### Portability — self-contained skills
+
+Skills are synced into consumer repositories verbatim by reusable workflows like
+`sync-skills.yml` (rsync, no link rewriting). Anything outside the skill folder doesn't
+come along, so links that escape the folder 404 the moment the skill lands in a consumer.
+
+Two rules keep skills portable:
+
+1. **Don't use relative links that escape the skill folder.** No `../`-anything pointing
+   at `references/`, `prompts/`, `agents/`, or any sibling of `skills/`. Those resolve
+   locally but break on sync.
+2. **Bundle every reference the skill needs inside the skill.** Put shared docs under
+   `skill-name/references/<topic>.md` and link them relatively
+   (`[docs](references/foo.md)`). If you genuinely need to point at something that lives
+   outside the skill, use the full GitHub URL — e.g.
+   `https://github.com/<owner>/<repo>/blob/main/path/to/doc.md` — so it resolves from
+   anywhere.
+
+The repo's in-tree link checker (see `CLAUDE.md`) catches broken in-repo paths but not
+escape-relative links that happen to resolve locally, so this rule has to be held by
+convention until CI enforces it.
+
 #### Writing Patterns
 
 Prefer using the imperative form in instructions.

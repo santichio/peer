@@ -17,6 +17,7 @@ Skills follow the [SKILL.md format](skills/skill-creator/SKILL.md) (folder per s
 | [`gitflow`](skills/gitflow/SKILL.md) | Gitflow Workflow | — | — | Drive a code change end-to-end through gitflow using git and the GitHub CLI; stops at PR-ready. |
 | [`prd`](skills/prd/SKILL.md) | PRD Generator | — | — | Generate a Product Requirements Document for a new feature. |
 | [`ralph`](skills/ralph/SKILL.md) | Ralph PRD Converter | — | — | Convert a PRD to the prd.json format for the Ralph autonomous agent system. |
+| [`peer-intake`](skills/peer-intake/SKILL.md) | Peer Backlog Intake | — | — | Convert GitHub Project 'To Do' tasks into standardized PRDs under .peer/prd/. |
 
 ## Prompts
 

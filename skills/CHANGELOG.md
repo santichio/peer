@@ -6,6 +6,15 @@ Skills follow the [SKILL.md format](skill-creator/SKILL.md) (folder per skill, `
 
 ## 2026-06-30
 
+### Added
+- `peer-intake` — convert GitHub Project "To Do" tasks into standardized PRDs
+  under `.peer/prd/`. Reads project coordinates and product context from a new
+  `.peer/context.md` file (schema bundled at
+  `skills/peer-intake/references/context-schema.md`), pulls items via the
+  GitHub CLI, asks clarifying questions when a task is thin, and writes one
+  PRD per task using the `/prd` skill's section format so the output drops
+  straight into `/ralph`.
+
 ### Fixed
 - `gitflow` — rewrote every external relative link in `SKILL.md` and the bundled
   `agents/*.md` files to fully-qualified `https://github.com/santichio/peer/blob/main/…`

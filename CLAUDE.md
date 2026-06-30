@@ -4,11 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-A documentation repository that standardizes and centralizes AI-related documents —
-**skills, prompts, agents, templates, and references**. There is no build system, no
-package manager, and no tests: every "artifact" is a Markdown document that conforms to
-a shared standard. Work here is authoring and maintaining those documents and keeping
-the catalog consistent.
+A documentation repository that centralizes AI-related **agents, prompts, and skills**.
+Each skill is a self-contained folder bundling everything it needs (supporting prompts,
+agents, references, scripts) so it can be copied verbatim into a consumer repo without
+external dependencies. There is no build system, no package manager, and no tests:
+every "artifact" is either a Markdown document that conforms to a shared standard or
+an executable script bundled inside a skill. Work here is authoring and maintaining
+those artifacts and keeping the catalog consistent.
 
 ## Non-negotiable document standard
 
@@ -30,21 +32,25 @@ skill is a folder `skills/<name>/SKILL.md` in the [SKILL.md format](skills/skill
 bundled `scripts/ references/ assets/`. Authored via the `skill-creator` skill. Don't
 modify anything under `skills/skill-creator/`.
 
-**Scripts are also an exception** — files under `scripts/<topic>/` are executable helpers
-(bash, python, etc.), not Markdown. Metadata lives in a **header comment** at the top of
-the file (`id` matches the filename stem, `description`, `version` SemVer, `owner`); they
-do not use YAML frontmatter or the base template. List them in `INDEX.md` (Scripts section)
-and log changes in `scripts/CHANGELOG.md` by `id` like other categories.
+**Scripts are also an exception** — executable helpers (bash, python, etc.) bundled
+inside the skill that owns them (e.g. `skills/ralph/ralph.sh`). Metadata lives in a
+**header comment** at the top of the file (`id` matches the filename stem,
+`description`, `version` SemVer, `owner`); they do not use YAML frontmatter or the
+base template. They are tracked as part of the owning skill — no separate INDEX row
+or per-script changelog.
 
 ## Layout
 
-- **Non-skill docs:** `<category>/<topic>/<id>.md` — categories `prompts/ agents/
-  references/`; documents grouped in **topic** subfolders (e.g. `references/git/`,
-  `references/engineering/`). `templates/` holds the base template directly.
-- **Skills:** flat `skills/<name>/SKILL.md` — one self-contained folder per skill, no
-  topic subfolder.
-- **Scripts:** `scripts/<topic>/<id>.{sh,py,...}` — executable helpers; metadata in a
-  header comment, not YAML frontmatter.
+- **Skills (primary payload):** `skills/<name>/SKILL.md` — flat, one self-contained
+  folder per skill. May bundle `agents/`, `prompts/`, `references/`, `scripts/`, and
+  `assets/` subfolders. A skill's bundled prompts/agents/references are not listed in
+  `INDEX.md` separately — they ride along with the skill.
+- **Top-level non-skill docs:** `references/<topic>/<id>.md` for engineering
+  references that haven't been folded into a specific skill yet
+  (e.g. `references/engineering/`). `templates/` holds the base template directly.
+- **Reusable workflows + their consumer docs:** `.github/workflows/` —
+  `sync-skills.yml`, `lint-skills.yml`, and the consumer guide
+  `sync-skills-action.md`.
 
 ## Creating a new document
 
@@ -54,10 +60,10 @@ and log changes in `scripts/CHANGELOG.md` by `id` like other categories.
 > in `INDEX.md` (Skills table, version/status `—`) and `skills/CHANGELOG.md` (by date). The
 > steps below are for non-skill documents.
 
-1. **Copy the template.** `cp templates/base-document.md <category>/<topic>/<id>.md`.
-   Pick the category (`skills/ prompts/ agents/ references/`) and a topic subfolder
-   (e.g. `git`, `engineering`). Create the topic folder if it's new. The filename stem
-   **is** the `id` (kebab-case).
+1. **Copy the template.** `cp templates/base-document.md references/<topic>/<id>.md`.
+   Currently only `references/engineering/` is in active use at the top level — almost
+   every new artifact belongs inside an existing skill instead. Create the topic
+   subfolder if it's new. The filename stem **is** the `id` (kebab-case).
 2. **Fill the frontmatter.** All required fields; `version: 1.0.0`; `created` and
    `updated` = today (ISO `YYYY-MM-DD`); `status` usually `active` (or `draft`); set
    `related` ids. Write the body in GFM (Mermaid for diagrams), remove unused optional
@@ -114,13 +120,14 @@ file itself are the minimum frontmatter fixes required by repo policy (see step 
 1. **Read the file and understand what changed.** Compare against `git diff` if a prior
    version is on disk. Note: content edits, frontmatter edits, filename change, folder
    move, or any combination.
-2. **Verify directory placement.** The file must live under the correct category and
-   topic:
-   - `references/<topic>/`, `prompts/<topic>/`, `agents/<topic>/` — non-skill docs
-     grouped by topic.
+2. **Verify directory placement.** The file must live under the correct location:
+   - `skills/<name>/` (and its bundled `agents/`, `prompts/`, `references/`,
+     `scripts/`, `assets/` subfolders) — preferred home for any new artifact that
+     supports a specific skill.
+   - `references/<topic>/` — top-level engineering references not yet folded into a
+     skill (currently just `references/engineering/`).
    - `templates/` — base template only.
-   - `skills/<name>/SKILL.md` — flat, no topic subfolder.
-   - `scripts/<topic>/<id>.{sh,py,...}` — executable helpers.
+   - `.github/workflows/` — reusable workflows and their consumer docs.
 
    If the file is in the wrong place, `git mv` it to the right path. Confirm with the
    user before moving if the correct topic is ambiguous.
@@ -153,10 +160,12 @@ ask before touching the body.
 ## Cross-links
 
 Documents reference each other with **relative Markdown links** and via the `related`
-frontmatter (which uses ids, not paths). Because of the two-deep layout, links between
-categories use `../../` (e.g. a `skills/<name>/SKILL.md` links a reference as
-`../../references/git/<id>.md`). After moving or adding files, verify every link resolves
-(the checker below — the `skills/skill-creator/` bundle's internal links are out of scope):
+frontmatter (which uses ids, not paths). Inside a skill, links to bundled siblings stay
+relative (e.g. `references/<id>.md` from a `SKILL.md`, or `../references/<id>.md` from
+a bundled `agents/<name>.md`). Skills must **not** link outside their own folder —
+those break the moment the skill is synced into a consumer repo. After moving or adding
+files, verify every link resolves (the checker below — the `skills/skill-creator/`
+bundle's internal links are out of scope):
 
 ```bash
 # from repo root — prints BROKEN lines for any unresolved relative .md link
@@ -171,16 +180,20 @@ done
 
 ## This repo follows its own git policy
 
-The git references under `references/git/` are the policy this repo is governed by, and
-`skills/gitflow/SKILL.md` is the operational procedure. When making changes here:
+The git references bundled under `skills/gitflow/references/` are the policy this repo is
+governed by, and `skills/gitflow/SKILL.md` is the operational procedure. When making
+changes here:
 
 - Branch from `develop` (not `main`); both are default branches. Name branches
-  `feature/<issue_id>-<name>` (or `hotfix/`). See `references/git/git-branching-strategy.md`.
+  `feature/<issue_id>-<name>` (or `hotfix/`). See
+  `skills/gitflow/references/git-branching-strategy.md`.
 - Commits follow Conventional Commits, **header ≤ 50 chars**, standard types only
   (the custom `cleanup`/`remove`/`raw` types were removed). See
-  `references/git/git-commit-conventions.md`. `docs(...)` is the usual type for content here.
+  `skills/gitflow/references/git-commit-conventions.md`. `docs(...)` is the usual type
+  for content here.
 - **Do not self-merge.** Open a PR (base `develop`) and stop for review —
-  `references/git/git-code-review.md` requires ≥1 approval; `.github/CODEOWNERS` routes it.
+  `skills/gitflow/references/git-code-review.md` requires ≥1 approval; `.github/CODEOWNERS`
+  routes it.
 
 ## Reusable workflows
 
@@ -189,7 +202,7 @@ The git references under `references/git/` are the policy this repo is governed 
 - **`sync-skills.yml`** — reusable `workflow_call` workflow that syncs selected
   `skills/<name>/` folders from this repo into a consumer's destination dir
   (default `.claude/skills`). Modes: `pull-request` (default) or `commit`. Inputs
-  documented in [`references/automation/sync-skills-action.md`](references/automation/sync-skills-action.md).
+  documented in [`.github/workflows/sync-skills-action.md`](.github/workflows/sync-skills-action.md).
 - **`lint-skills.yml`** — CI guard. Runs on every PR and push touching `skills/`; calls
   `.github/scripts/lint-skill.py` to assert each `skills/<name>/SKILL.md` has YAML
   frontmatter, a `name:` matching the folder, and a non-empty `description:`.

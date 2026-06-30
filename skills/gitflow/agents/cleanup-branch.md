@@ -52,8 +52,8 @@ git push origin --delete <branch>
 
 After the PR into `main` merges and the release is tagged, `main` must be merged back into
 `develop` so the fix/release notes are not lost — see
-[`git-versioning-releases`](https://github.com/santichio/peer/blob/main/references/git/git-versioning-releases.md) and
-[`git-branching-strategy`](https://github.com/santichio/peer/blob/main/references/git/git-branching-strategy.md).
+[`git-versioning-releases`](../references/git-versioning-releases.md) and
+[`git-branching-strategy`](../references/git-branching-strategy.md).
 
 Open a second PR:
 

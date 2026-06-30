@@ -64,9 +64,9 @@ Every repository keeps a `CHANGELOG.md` in its root that:
 - Is updated with each release.
 
 > Note: this describes the root `CHANGELOG.md` of a **software** repository (one file,
-> Keep a Changelog style). This docs repo applies the same style but keeps one
-> `CHANGELOG.md` per top-level directory, grouped by document id — see the
-> [README](../../README.md#changelogs).
+> Keep a Changelog style). Documentation repositories sometimes apply the same style
+> but keep one `CHANGELOG.md` per top-level directory, grouped by document id; the
+> Keep-a-Changelog format itself is identical either way.
 
 ### Version alignment
 

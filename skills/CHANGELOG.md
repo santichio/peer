@@ -6,6 +6,20 @@ Skills follow the [SKILL.md format](skill-creator/SKILL.md) (folder per skill, `
 
 ## 2026-06-30
 
+### Changed
+- **Repo restructure: skills now bundle the artifacts they own.** `gitflow`
+  absorbs its supporting references (`git-*.md` moved from
+  `references/git/` into `skills/gitflow/references/`), the
+  `branch-name-helper` and `commit-message-writer` prompts (from
+  `prompts/git/` into `skills/gitflow/prompts/`), and the
+  `pr-review-assistant` agent (from `agents/git/` into
+  `skills/gitflow/agents/`). `ralph` absorbs `ralph.sh` (from
+  `scripts/ralph/`). All in-skill links rewritten to relative paths — the
+  full-GitHub-URL pattern previously needed for portability is no longer
+  required since every dependency now lives inside the skill folder.
+- `ralph` — `SKILL.md` now links to the bundled `ralph.sh` directly instead
+  of describing it obliquely as "the ralph.sh script".
+
 ### Added
 - `peer-intake` — convert GitHub Project "To Do" tasks into standardized PRDs
   under `.peer/prd/`. Reads project coordinates and product context from a new

@@ -19,7 +19,7 @@ related: [git-branching-strategy]
 
 ## Purpose
 
-Use this to name a branch consistently with [`git-branching-strategy`](../../references/git/git-branching-strategy.md)
+Use this to name a branch consistently with [`git-branching-strategy`](../references/git-branching-strategy.md)
 without memorizing the format.
 
 ## Content
@@ -52,4 +52,4 @@ input `feature, EG-023, new page development` → `feature/EG-023-new-page-devel
 
 ## Related
 
-- [`git-branching-strategy`](../../references/git/git-branching-strategy.md) — branch naming and origins.
+- [`git-branching-strategy`](../references/git-branching-strategy.md) — branch naming and origins.

@@ -4,6 +4,36 @@ Skills follow the [SKILL.md format](skill-creator/SKILL.md) (folder per skill, `
 `description` frontmatter) and have **no per-document version**, so this log is organized
 **by date** rather than by SemVer. Based on [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-06-30
+
+### Fixed
+- `gitflow` — rewrote every external relative link in `SKILL.md` and the bundled
+  `agents/*.md` files to fully-qualified `https://github.com/santichio/peer/blob/main/…`
+  URLs. The previous `../../…` paths broke when the skill was synced into consumer repos
+  by `sync-skills.yml` (which rsyncs the skill folder verbatim, no link rewriting). 19
+  links updated across 6 files; sibling links inside the skill folder were left as
+  relative paths.
+
+### Changed
+- `skill-creator` — added a "Portability — self-contained skills" subsection to
+  `SKILL.md` (under Skill Writing Guide) that requires new skills to bundle their
+  references and forbids relative links escaping the skill folder. External pointers
+  must use the full GitHub URL.
+
+## 2026-06-29
+
+### Changed
+- `gitflow` — split each stage of the workflow into a bundled subagent under
+  `skills/gitflow/agents/` (`sync-local`, `create-branch`, `commit-changes`, `push-branch`,
+  `open-pr`, `cleanup-branch`) and refactored `SKILL.md` into a coordinator that dispatches
+  to them. Behavior unchanged — only modularity and reuse improve.
+
+### Added
+- `gitflow` — `agents/release-workflow.md` orchestrates a release end-to-end: cut the
+  release branch, bump the version, update `CHANGELOG.md`, open the PR, tag on `main`
+  after merge, and run the merge-back PR into `develop`. Fills the previous gap where the
+  skill referenced versioning but bundled no orchestration.
+
 ## 2026-06-27
 
 ### Added

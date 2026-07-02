@@ -8,7 +8,7 @@ changelog, open the PR, tag the release on `main`, and merge back into `develop`
 Chain the per-step agents for a release. This is the only gitflow agent that owns
 **versioning** (SemVer bump) and **changelog maintenance** in addition to the standard
 branch / commit / PR cycle. Always follows
-[`git-versioning-releases`](https://github.com/santichio/peer/blob/main/references/git/git-versioning-releases.md).
+[`git-versioning-releases`](../references/git-versioning-releases.md).
 
 ## Inputs
 
@@ -44,7 +44,7 @@ If unclear, grep the repo for the previous version and update every occurrence; 
 
 ### Stage 4 — Update CHANGELOG.md
 
-Per [`git-versioning-releases`](https://github.com/santichio/peer/blob/main/references/git/git-versioning-releases.md):
+Per [`git-versioning-releases`](../references/git-versioning-releases.md):
 
 - Newest version on top.
 - Categorize under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**, **Security**.
@@ -96,7 +96,7 @@ git push origin v<X.Y.Z>
 ```
 
 Tag format is `v<SemVer>` per
-[`git-versioning-releases`](https://github.com/santichio/peer/blob/main/references/git/git-versioning-releases.md). Tags are
+[`git-versioning-releases`](../references/git-versioning-releases.md). Tags are
 **never deleted or moved** once pushed — to withdraw, ship a new release.
 
 ### Stage 8 — Publish release notes

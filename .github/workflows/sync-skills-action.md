@@ -20,7 +20,7 @@ related: []
 
 This document is for **consumer repositories** that want to pull AI skills from
 `santichio/peer` into their own `.claude/skills/` (or any) directory. The
-[`sync-skills`](../../.github/workflows/sync-skills.yml) reusable workflow does the
+[`sync-skills`](sync-skills.yml) reusable workflow does the
 fetching, copying, and either commits the changes or opens a pull request.
 
 Use it whenever you want a consumer repo to track skills published from `peer` without
@@ -159,7 +159,7 @@ jobs:
 | `@feature/...`    | Lowest    | Local testing only.                                                 |
 
 Until a tagged release exists in `peer`, pin to a sha or `@develop`. See
-[`git-versioning-releases`](../git/git-versioning-releases.md) for the tagging policy.
+[`git-versioning-releases`](../../skills/gitflow/references/git-versioning-releases.md) for the tagging policy.
 
 ## Mode comparison
 
@@ -199,9 +199,9 @@ flowchart LR
 
 ## Related
 
-- [`git-branching-strategy`](../git/git-branching-strategy.md) — branch model the
+- [`git-branching-strategy`](../../skills/gitflow/references/git-branching-strategy.md) — branch model the
   generated PR follows.
-- [`git-commit-conventions`](../git/git-commit-conventions.md) — commit message format
+- [`git-commit-conventions`](../../skills/gitflow/references/git-commit-conventions.md) — commit message format
   used by `sync-skills`.
-- [`git-versioning-releases`](../git/git-versioning-releases.md) — tagging policy for
+- [`git-versioning-releases`](../../skills/gitflow/references/git-versioning-releases.md) — tagging policy for
   the `@v1` pin form.

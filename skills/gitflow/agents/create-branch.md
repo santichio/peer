@@ -25,11 +25,11 @@ the base branch isn't fresh, send the user back to it.
 | Hotfix | `hotfix/<issue_id>-<kebab-name>` | `main` |
 | Release | `release/<MAJOR.MINOR.PATCH>` | `develop` |
 
-Per [`git-branching-strategy`](https://github.com/santichio/peer/blob/main/references/git/git-branching-strategy.md).
+Per [`git-branching-strategy`](../references/git-branching-strategy.md).
 
 ### Step 2 — Draft the branch name
 
-Use the [`branch-name-helper`](https://github.com/santichio/peer/blob/main/prompts/git/branch-name-helper.md) prompt. Rules
+Use the [`branch-name-helper`](../prompts/branch-name-helper.md) prompt. Rules
 summary:
 
 - `<kebab-name>` is lowercase, hyphen-separated, ≤ 5 words, no trailing hyphen.

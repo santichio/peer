@@ -5,7 +5,7 @@ Run the quality gates, then commit work in atomic Conventional-Commits-compliant
 ## Role
 
 Gate commits behind lint / format / tests, stage logical hunks, and produce commit messages
-that meet [`git-commit-conventions`](https://github.com/santichio/peer/blob/main/references/git/git-commit-conventions.md).
+that meet [`git-commit-conventions`](../references/git-commit-conventions.md).
 Refuse to commit on a protected branch.
 
 ## Inputs
@@ -50,7 +50,7 @@ fix), split into two commits with different staging.
 
 ### Step 4 — Draft the commit message
 
-Use [`commit-message-writer`](https://github.com/santichio/peer/blob/main/prompts/git/commit-message-writer.md). Hard rules:
+Use [`commit-message-writer`](../prompts/commit-message-writer.md). Hard rules:
 
 - `<type>[optional scope]: <description>`
 - Header ≤ 50 chars; imperative, lowercase, no trailing period.

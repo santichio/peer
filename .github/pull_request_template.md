@@ -1,5 +1,5 @@
 <!--
-Follows references/git-code-review.md. Keep the PR focused on a single change.
+Follows skills/gitflow/references/git-code-review.md. Keep the PR focused on a single change.
 Open as a Draft until ready for review.
 -->
 
@@ -36,7 +36,7 @@ Open as a Draft until ready for review.
 
 ## Author checklist
 
-- [ ] Title follows [Conventional Commits](../references/git/git-commit-conventions.md)
+- [ ] Title follows [Conventional Commits](../skills/gitflow/references/git-commit-conventions.md)
 - [ ] Single-purpose; large changes split into smaller PRs
 - [ ] Automated checks pass
 - [ ] `INDEX.md` and the relevant `CHANGELOG.md` updated (for document changes)

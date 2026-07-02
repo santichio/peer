@@ -9,7 +9,7 @@ Take a change from a fresh branch to an open pull request, following the organiz
 gitflow and commit conventions.
 
 **You never merge your own PR.** Per
-[`git-code-review`](https://github.com/santichio/peer/blob/main/references/git/git-code-review.md), a change needs at least one
+[`git-code-review`](references/git-code-review.md), a change needs at least one
 approval and self-merge is not permitted. End at "PR ready for review"; a human approves
 and merges. This matters because review is the quality gate the whole policy is built on —
 skipping it defeats the point.
@@ -39,7 +39,7 @@ in [`agents/sync-local.md`](agents/sync-local.md).
 | Hotfix | `hotfix/<issue_id>-<name>` | `main` | `main` | also into `develop` | `v<version>` on `main` |
 | Release | `release/<version>` | `develop` | `main` | also into `develop` | `v<version>` on `main` |
 
-Branch names follow [`branch-name-helper`](https://github.com/santichio/peer/blob/main/prompts/git/branch-name-helper.md).
+Branch names follow [`branch-name-helper`](prompts/branch-name-helper.md).
 For **release**, use the dedicated [`agents/release-workflow.md`](agents/release-workflow.md)
 instead of running the stages below by hand — it owns the version bump, the changelog
 update, and the tag.
@@ -62,7 +62,7 @@ plus the version bump, changelog, tag, and merge-back PR.
 
 After Stage 4 the PR is ready and CI is running. **Report the PR URL and STOP.** Do not
 approve or merge — that's a human decision per
-[`git-code-review`](https://github.com/santichio/peer/blob/main/references/git/git-code-review.md). The merge command is shown
+[`git-code-review`](references/git-code-review.md). The merge command is shown
 for the reviewer's reference only:
 
 ```bash
@@ -70,7 +70,7 @@ for the reviewer's reference only:
 gh pr merge --no-ff --delete-branch
 ```
 
-The [`pr-review-assistant`](https://github.com/santichio/peer/blob/main/agents/git/pr-review-assistant.md) agent can produce a
+The [`pr-review-assistant`](agents/pr-review-assistant.md) agent can produce a
 first-pass review before a human takes over; it never approves.
 
 ## Guardrails
@@ -104,7 +104,7 @@ flowchart TD
 
 ## Related references
 
-- [`git-branching-strategy`](https://github.com/santichio/peer/blob/main/references/git/git-branching-strategy.md) — branches, origins, and merge targets.
-- [`git-commit-conventions`](https://github.com/santichio/peer/blob/main/references/git/git-commit-conventions.md) — commit message rules.
-- [`git-code-review`](https://github.com/santichio/peer/blob/main/references/git/git-code-review.md) — PR and review requirements (no self-merge).
-- [`git-versioning-releases`](https://github.com/santichio/peer/blob/main/references/git/git-versioning-releases.md) — tags, releases, merge-back.
+- [`git-branching-strategy`](references/git-branching-strategy.md) — branches, origins, and merge targets.
+- [`git-commit-conventions`](references/git-commit-conventions.md) — commit message rules.
+- [`git-code-review`](references/git-code-review.md) — PR and review requirements (no self-merge).
+- [`git-versioning-releases`](references/git-versioning-releases.md) — tags, releases, merge-back.

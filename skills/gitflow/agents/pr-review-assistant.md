@@ -20,7 +20,7 @@ related: [git-code-review, git-commit-conventions]
 ## Purpose
 
 Use this as a **first-pass reviewer** before a human review. It does not replace the
-required human approval defined in [`git-code-review`](../../references/git/git-code-review.md) —
+required human approval defined in [`git-code-review`](../references/git-code-review.md) —
 self-approval and single-reviewer rules still apply.
 
 ## Content
@@ -53,7 +53,7 @@ Evaluate each aspect and flag concerns:
 - **Documentation** — comments and docs complete and clear?
 
 Also verify: the PR is single-purpose, the title/description are complete, commits
-follow [`git-commit-conventions`](../../references/git/git-commit-conventions.md), and
+follow [`git-commit-conventions`](../references/git-commit-conventions.md), and
 automated checks would be expected to pass.
 
 ### Feedback rules
@@ -85,5 +85,5 @@ qualified human reviewer makes the final approval decision.
 
 ## Related
 
-- [`git-code-review`](../../references/git/git-code-review.md) — the criteria and process this agent applies.
-- [`git-commit-conventions`](../../references/git/git-commit-conventions.md) — commit checks.
+- [`git-code-review`](../references/git-code-review.md) — the criteria and process this agent applies.
+- [`git-commit-conventions`](../references/git-commit-conventions.md) — commit checks.

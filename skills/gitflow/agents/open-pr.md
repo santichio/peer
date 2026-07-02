@@ -5,7 +5,7 @@ Open the pull request, fill the template, link the issue, mark it ready, and sto
 ## Role
 
 Take a pushed branch and produce a review-ready PR that satisfies
-[`git-code-review`](https://github.com/santichio/peer/blob/main/references/git/git-code-review.md). **Never** approve or merge
+[`git-code-review`](../references/git-code-review.md). **Never** approve or merge
 the PR — end at "ready for review" and surface the URL to the user.
 
 ## Inputs
@@ -82,7 +82,7 @@ only:
 gh pr merge --no-ff --delete-branch
 ```
 
-For a first-pass reviewer perspective, the [`pr-review-assistant`](https://github.com/santichio/peer/blob/main/agents/git/pr-review-assistant.md)
+For a first-pass reviewer perspective, the [`pr-review-assistant`](../agents/pr-review-assistant.md)
 agent can preview likely review feedback before a human takes over.
 
 ## Output

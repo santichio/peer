@@ -6,6 +6,11 @@ Entries are grouped by document `id`, newest version first.
 
 ## `sync-skills-action`
 
+> **2026-06-30 — Moved.** Relocated to `.github/workflows/sync-skills-action.md`
+> next to the workflow it documents. No content change; the doc is now adjacent
+> to `sync-skills.yml`. Future entries for this id should be added to the repo-root
+> `CHANGELOG.md` (no per-directory changelog at the new location).
+
 ### [1.0.1] — 2026-06-29
 #### Changed
 - Added a "How the sync works" section explaining the pull-based model, when consumers
@@ -56,11 +61,19 @@ Entries are grouped by document `id`, newest version first.
 
 ## `git-repository-standards`
 
+> **2026-06-30 — Moved.** Now bundled inside the `gitflow` skill at
+> `skills/gitflow/references/git-repository-standards.md`. No content change.
+> Future entries for this id should be logged in `skills/CHANGELOG.md` by date.
+
 ### [1.0.0] — 2026-06-26
 #### Added
 - Repository creation rules, the prefix catalog, and baseline file requirements.
 
 ## `git-branching-strategy`
+
+> **2026-06-30 — Moved.** Now bundled inside the `gitflow` skill at
+> `skills/gitflow/references/git-branching-strategy.md`. No content change.
+> Future entries for this id should be logged in `skills/CHANGELOG.md` by date.
 
 ### [1.0.0] — 2026-06-26
 #### Added
@@ -69,6 +82,10 @@ Entries are grouped by document `id`, newest version first.
 
 ## `git-commit-conventions`
 
+> **2026-06-30 — Moved.** Now bundled inside the `gitflow` skill at
+> `skills/gitflow/references/git-commit-conventions.md`. No content change.
+> Future entries for this id should be logged in `skills/CHANGELOG.md` by date.
+
 ### [1.0.0] — 2026-06-26
 #### Added
 - Conventional Commits structure, the standard type library (with SemVer mapping),
@@ -76,11 +93,19 @@ Entries are grouped by document `id`, newest version first.
 
 ## `git-code-review`
 
+> **2026-06-30 — Moved.** Now bundled inside the `gitflow` skill at
+> `skills/gitflow/references/git-code-review.md`. No content change.
+> Future entries for this id should be logged in `skills/CHANGELOG.md` by date.
+
 ### [1.0.0] — 2026-06-26
 #### Added
 - Pull-request requirements, review criteria (GFM table), process, and feedback rules.
 
 ## `git-versioning-releases`
+
+> **2026-06-30 — Moved.** Now bundled inside the `gitflow` skill at
+> `skills/gitflow/references/git-versioning-releases.md`. No content change.
+> Future entries for this id should be logged in `skills/CHANGELOG.md` by date.
 
 ### [1.0.0] — 2026-06-26
 #### Added

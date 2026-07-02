@@ -74,5 +74,5 @@ focused on the code; technical leads make the final call when consensus can't be
 
 ## Related
 
-- [`pr-review-assistant`](../../agents/git/pr-review-assistant.md) — agent that reviews a PR against these criteria.
+- [`pr-review-assistant`](../agents/pr-review-assistant.md) — agent that reviews a PR against these criteria.
 - [`git-branching-strategy`](git-branching-strategy.md) — which branches require review before merge.

@@ -78,8 +78,11 @@ scope dance.
 
 - FR-1: Replace `gh pr create|view|ready|merge` in `skills/gitflow/` with GitHub
   MCP tool calls, preserving arguments and output semantics.
-- FR-2: Replace `gh release create` in `skills/gitflow/agents/release-workflow.md`
-  with the MCP equivalent (or git-tag + MCP if unavailable).
+- FR-2: Replace `gh release create` in `skills/gitflow/agents/release-workflow.md`.
+  The GitHub MCP server has **no `create_release` tool** (only `get_latest_release`,
+  `get_release_by_tag`, `list_releases`), so create and push the annotated tag with
+  local `git tag` + push (git stays in scope); the GitHub Release object is
+  **deferred** — created manually or in a follow-up, not by the skill.
 - FR-3: Replace `gh project item-list` and `gh issue view` in
   `skills/peer-intake/SKILL.md` with GitHub MCP tools; update the JSON-shape
   assumptions in the surrounding prose and `references/context-schema.md`.
@@ -126,11 +129,16 @@ scope dance.
   `skills/peer-intake/SKILL.md` (`gh project item-list`, `gh issue view`,
   `gh auth status`, `gh --version`) plus
   `skills/peer-intake/references/context-schema.md`.
-- **MCP tool mapping (to confirm against the connected server's toolset):**
+- **MCP tool mapping (verified against `github/github-mcp-server`):**
   `gh pr create` → `create_pull_request`; `gh pr merge` → `merge_pull_request`;
-  `gh issue view` → issue-get tool; `gh project item-list` → project-items tool;
-  `gh release create` → release-create tool (verify it exists; else git tag + MCP).
-- **Auth:** MCP server authenticates via its own token/OAuth config, removing the
+  `gh pr view` → `pull_request_read`; `gh pr ready` → **no draft-ready tool**, so
+  open PRs non-draft directly (or `update_pull_request`); `gh issue view` →
+  `issue_read`; `gh project item-list` → `projects_list` (`list_project_items`);
+  `gh release create` → **no tool** → `git tag` + push, Release deferred (FR-2).
+- **Server (documented in each skill):** default to the hosted
+  `https://api.githubcopilot.com/mcp/` (one-click, OAuth/PAT); note the local
+  self-hosted `ghcr.io/github/github-mcp-server` Docker/binary as the alternative.
+- **Auth:** the MCP server authenticates via its own OAuth/PAT config, removing the
   per-user `gh auth refresh -s read:project` step from `peer-intake`.
 - **Portability:** because these skills sync into consumer repos, the MCP
   prerequisite must be documented in each skill so a consumer knows to connect
@@ -147,14 +155,16 @@ scope dance.
 - The complete implementation lands in a single PR to `develop` that is
   review-ready (green lint, links intact).
 
-## Open Questions
+## Resolved Decisions
 
-- Which concrete GitHub MCP server will consumers connect (the official remote
-  `api.githubcopilot.com/mcp/` vs. a self-hosted/local one), and does its toolset
-  include a release-creation tool? If not, `release-workflow` uses `git tag` +
-  an MCP push/ref tool.
-- Should the reusable `.github/workflows/` remain on `gh`/`GITHUB_TOKEN`
-  indefinitely, or is a follow-up task wanted to align CI too? (Currently a
-  Non-Goal.)
-- Do any consumer repos rely on `peer-intake` working in a headless/cron context
-  where MCP is unavailable? If so, define the fallback behavior explicitly.
+- **Which MCP server:** document **both**, preferring the hosted
+  `https://api.githubcopilot.com/mcp/` (one-click, OAuth/PAT), with local Docker
+  `ghcr.io/github/github-mcp-server` as the self-hosted alternative.
+- **Release creation:** the server has **no `create_release` tool**, so
+  `release-workflow` tags via local `git tag` + push and **defers** the GitHub
+  Release object (manual or follow-up). See FR-2.
+- **CI scope:** the reusable `.github/workflows/` **stay on `GITHUB_TOKEN`/`gh`** —
+  MCP targets the interactive agent, not Actions. No follow-up filed. (Non-Goal.)
+- **MCP-unavailable (headless/cron):** `peer-intake` treats a missing GitHub MCP
+  connection like a failed precondition — **report clearly and stop**, no `gh`
+  fallback (`gh` is removed).

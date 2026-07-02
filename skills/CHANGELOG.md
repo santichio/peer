@@ -18,6 +18,24 @@ Skills follow the [SKILL.md format](skill-creator/SKILL.md) (folder per skill, `
 - `ralph` — runtime state (`prd.json`, `progress.txt`, `archive/`, `.last-branch`)
   now lives in the repo's `peer/ralph/` instead of inside the skill bundle
   (`$SCRIPT_DIR`). `ralph.sh` bumped to 1.1.0; `SKILL.md` paths updated.
+- **Replaced the `gh` CLI with the GitHub MCP server connector** for all
+  GitHub-API operations in the skills that touch GitHub. Local `git` is
+  unchanged; only GitHub-API calls moved. `gh` is no longer an operational
+  dependency — this changelog entry is the only remaining reference to it.
+  - `gitflow` — `open-pr`, `cleanup-branch`, `sync-local`, `release-workflow`,
+    and `SKILL.md` now use GitHub MCP tools: `gh pr create`/`gh pr ready` →
+    `create_pull_request` (`draft: false`, so PRs open ready — no draft phase);
+    `gh pr view` → `pull_request_read`; `gh pr merge` → GitHub UI /
+    `merge_pull_request`; the MCP-connected check replaces `gh --version`/
+    `gh auth status`/`gh auth login`. `gh release create` has no MCP equivalent,
+    so releases stop at the pushed `git` tag and the GitHub Release object is
+    deferred (manual/follow-up).
+  - `peer-intake` — `gh project item-list` → `projects_list`
+    (`list_project_items`), `gh issue view` → `issue_read`; preconditions and
+    `references/context-schema.md` updated to the MCP tools and response shape.
+  - Documents both server options (hosted `api.githubcopilot.com/mcp/`, preferred;
+    local `ghcr.io/github/github-mcp-server`). Reusable `.github/workflows/` CI is
+    intentionally left on `GITHUB_TOKEN` (out of scope).
 
 ## 2026-06-30
 

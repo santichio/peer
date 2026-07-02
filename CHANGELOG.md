@@ -6,6 +6,25 @@ Based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- **Repo focus narrowed to agents, prompts, and skills (2026-06-30).** Supporting
+  references and scripts now bundle inside the skill that owns them so each skill
+  folder is self-contained and copyable into a consumer repo without external
+  dependencies. Specifically:
+  - `references/git/*.md` → `skills/gitflow/references/`
+  - `prompts/git/*.md` → `skills/gitflow/prompts/`
+  - `agents/git/pr-review-assistant.md` → `skills/gitflow/agents/`
+  - `scripts/ralph/ralph.sh` → `skills/ralph/`
+  - `references/automation/sync-skills-action.md` →
+    `.github/workflows/sync-skills-action.md` (adjacent to the workflow it documents)
+  - The now-empty top-level `prompts/`, `agents/`, and `scripts/` directories were
+    removed along with their per-directory `CHANGELOG.md` files.
+  - `references/engineering/*.md` is deferred — these stay at the top level for now
+    and will be addressed in a follow-up.
+  All inbound links across `INDEX.md`, `README.md`, `CONTRIBUTING.md`, `CLAUDE.md`,
+  and `.github/pull_request_template.md` were rewritten to point at the new
+  locations.
+
 ### Added
 - Initial repository scaffolding: `README.md`, `INDEX.md`, base template, and the
   `templates/ skills/ prompts/ agents/ references/` structure.

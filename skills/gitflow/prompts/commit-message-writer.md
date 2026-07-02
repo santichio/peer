@@ -19,7 +19,7 @@ related: [git-commit-conventions]
 
 ## Purpose
 
-Use this to draft commit messages that follow [`git-commit-conventions`](../../references/git/git-commit-conventions.md).
+Use this to draft commit messages that follow [`git-commit-conventions`](../references/git-commit-conventions.md).
 Feed it a diff (`git diff --staged`) or a short description of the change.
 
 ## Content
@@ -56,4 +56,4 @@ OUTPUT
 
 ## Related
 
-- [`git-commit-conventions`](../../references/git/git-commit-conventions.md) — the spec this prompt enforces.
+- [`git-commit-conventions`](../references/git-commit-conventions.md) — the spec this prompt enforces.

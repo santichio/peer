@@ -8,7 +8,7 @@ changelog, open the PR, tag the release on `main`, and merge back into `develop`
 Chain the per-step agents for a release. This is the only gitflow agent that owns
 **versioning** (SemVer bump) and **changelog maintenance** in addition to the standard
 branch / commit / PR cycle. Always follows
-[`git-versioning-releases`](https://github.com/santichio/peer/blob/main/references/git/git-versioning-releases.md).
+[`git-versioning-releases`](../references/git-versioning-releases.md).
 
 ## Inputs
 
@@ -44,7 +44,7 @@ If unclear, grep the repo for the previous version and update every occurrence; 
 
 ### Stage 4 — Update CHANGELOG.md
 
-Per [`git-versioning-releases`](https://github.com/santichio/peer/blob/main/references/git/git-versioning-releases.md):
+Per [`git-versioning-releases`](../references/git-versioning-releases.md):
 
 - Newest version on top.
 - Categorize under: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**, **Security**.
@@ -96,18 +96,23 @@ git push origin v<X.Y.Z>
 ```
 
 Tag format is `v<SemVer>` per
-[`git-versioning-releases`](https://github.com/santichio/peer/blob/main/references/git/git-versioning-releases.md). Tags are
+[`git-versioning-releases`](../references/git-versioning-releases.md). Tags are
 **never deleted or moved** once pushed — to withdraw, ship a new release.
 
-### Stage 8 — Publish release notes
+### Stage 8 — Publish release notes (deferred)
+
+The annotated tag pushed in Stage 7 is the source of truth for the release. The
+GitHub MCP server has **no release-creation tool**, so publishing the GitHub
+**Release** object is a **deferred manual step** (or a follow-up): from the pushed
+`v<X.Y.Z>` tag, create the Release in the GitHub UI using the matching
+`CHANGELOG.md` section as the notes. Extract that section with:
 
 ```bash
-gh release create v<X.Y.Z> \
-  --title "v<X.Y.Z>" \
-  --notes-file <(awk "/^## \\[<X.Y.Z>\\]/,/^## \\[/{print}" CHANGELOG.md | sed '$d')
+awk "/^## \\[<X.Y.Z>\\]/,/^## \\[/{print}" CHANGELOG.md | sed '$d'
 ```
 
-Adjust if release notes should differ from the changelog section.
+The release is functionally complete at the pushed tag; the Release object is
+presentation only. Adjust the notes if they should differ from the changelog.
 
 ### Stage 9 — Merge-back into `develop`
 

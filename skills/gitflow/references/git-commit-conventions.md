@@ -91,5 +91,5 @@ Avoid: `Fixed bug`, `Updated code`, `WIP`, `Made changes requested in PR`.
 
 ## Related
 
-- [`commit-message-writer`](../../prompts/git/commit-message-writer.md) — prompt that drafts messages to this spec.
+- [`commit-message-writer`](../prompts/commit-message-writer.md) — prompt that drafts messages to this spec.
 - [`git-versioning-releases`](git-versioning-releases.md) — how `feat`/`fix`/`BREAKING CHANGE` map to SemVer.

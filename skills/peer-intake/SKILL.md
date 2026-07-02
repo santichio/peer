@@ -1,6 +1,6 @@
 ---
 name: peer-intake
-description: "Convert GitHub Project 'To Do' tasks into standardized PRDs under peer/prd/. Reads project coordinates and product context from peer/context.md, pulls each To Do item via the GitHub CLI, asks clarifying questions when a task is thin, then writes one PRD per task using the /prd skill's section format so the output drops straight into the /ralph autonomous loop. Use this whenever the user wants to intake the backlog, groom the project board, turn tickets into PRDs, kick off sprint planning, or generate PRDs from the project board — even if they don't say 'peer-intake'."
+description: "Convert GitHub Project 'To Do' tasks into standardized PRDs under peer/prd/. Reads project coordinates and product context from peer/context.md, pulls each To Do item via the GitHub MCP server, asks clarifying questions when a task is thin, then writes one PRD per task using the /prd skill's section format so the output drops straight into the /ralph autonomous loop. Use this whenever the user wants to intake the backlog, groom the project board, turn tickets into PRDs, kick off sprint planning, or generate PRDs from the project board — even if they don't say 'peer-intake'."
 user-invocable: true
 ---
 
@@ -25,8 +25,12 @@ do not re-derive steps from memory.
 
 Verify before starting. If any check fails, report it and stop — do not improvise.
 
-- `git --version` and `gh --version` succeed.
-- `gh auth status` shows an authenticated account with read access to GitHub Projects.
+- The **GitHub MCP server is connected** — the GitHub MCP tools (e.g.
+  `projects_list`, `issue_read`) are available. If not, connect it: hosted
+  `https://api.githubcopilot.com/mcp/` (OAuth/PAT), or the local
+  `ghcr.io/github/github-mcp-server` Docker image. This skill reads GitHub only
+  through these MCP tools. If the server is not connected (e.g. a headless/cron
+  run), report and stop.
 - `peer/context.md` exists at the repo root and parses (see
   [`references/context-schema.md`](references/context-schema.md) for the schema).
   If the file is missing, offer to scaffold one from the template in that reference
@@ -60,27 +64,24 @@ the wrong backlog.
 
 ### Stage 2 — Fetch To Do tasks
 
-Run the list query:
+List the project's items with the GitHub MCP tool **`projects_list`** (its
+`list_project_items` operation), passing the configured `owner` and
+`project_number` (from `peer/context.md`). Page through all items.
 
-```bash
-gh project item-list <project_number> --owner <owner> --format json --limit 200
-```
+Each item is one row on the project board and carries its field values,
+including the single-select **status** field (`status_field` in `context.md`).
+Filter to items whose status equals the configured `todo_value`. Match the
+status value literally, exactly as it appears in the project (including any
+emoji). Field names/shape follow the `projects_list` response — see
+[`references/context-schema.md`](references/context-schema.md).
 
-The JSON returns an `items` array. Each item is one row on the project board.
-The status field appears as a top-level key matching its display name (e.g.
-`"status": "To Do"`). Filter to items where the configured `status_field`
-equals the configured `todo_value`.
+For each selected item, hydrate the linked issue with the GitHub MCP tool
+**`issue_read`** (`owner`, `repo`, issue `number`), reading its number, title,
+body, labels, assignees, url, and state.
 
-For each selected item, hydrate the linked issue:
-
-```bash
-gh issue view <number> --repo <owner>/<repo> --json number,title,body,labels,assignees,url,state
-```
-
-Draft items (items created directly on the project with no linked issue) come
-back with `content.type == "DraftIssue"`; use their title and body as-is. Do
-not try to convert drafts into issues — that is a write action and is out of
-scope.
+Draft items (created directly on the project with no linked issue) have no issue
+to read — use their title and body from the project item as-is. Do not try to
+convert drafts into issues — that is a write action and is out of scope.
 
 If an issue fetch fails (deleted, moved repo, permission), record it for the
 final report and continue with the next item — one bad row should not stop the
@@ -199,16 +200,16 @@ List the failures with one-line reasons. Do not delete or modify anything in
 
 ## Guardrails
 
-- **Never modify the GitHub Project.** All `gh` calls in this skill are
-  read-only (`project item-list`, `issue view`). No `project item-edit`,
-  no `issue edit`, no status changes.
+- **Never modify the GitHub Project.** This skill uses only read-only GitHub MCP
+  tools (`projects_list`, `issue_read`). Never call `projects_write`, never edit
+  issues, never change status.
 - **Never overwrite an existing PRD without the user naming it explicitly.**
   Re-runs are common; preserving prior drafts (and the human edits on top of
   them) is the whole point of the skip behavior.
 - **Never invent project coordinates.** If `peer/context.md` is missing or
   incomplete, stop and point at
   [`references/context-schema.md`](references/context-schema.md).
-- **Surface fetch failures; don't paper over them.** A 404 on `gh issue view`
+- **Surface fetch failures; don't paper over them.** A 404 from `issue_read`
   for one row is fine to continue past; silently writing a PRD with no source
   body is not.
 
@@ -216,10 +217,10 @@ List the failures with one-line reasons. Do not delete or modify anything in
 
 ```mermaid
 flowchart TD
-    start(["User invokes /peer-intake"]) --> pre{"Preconditions OK?\ngit · gh auth · peer/context.md"}
+    start(["User invokes /peer-intake"]) --> pre{"Preconditions OK?\ngit · GitHub MCP · peer/context.md"}
     pre -- no --> stop1["Report missing piece & stop"]
     pre -- yes --> ctx["Stage 1 — Read peer/context.md"]
-    ctx --> fetch["Stage 2 — gh project item-list\nfilter by status_field=todo_value\nhydrate issues"]
+    ctx --> fetch["Stage 2 — projects_list\nfilter by status_field=todo_value\nhydrate issues via issue_read"]
     fetch --> pick["Stage 3 — Show list,\nuser picks scope"]
     pick --> loop{"Next task?"}
     loop -- no --> report["Stage 5 — Report wrote/skipped/failed"]

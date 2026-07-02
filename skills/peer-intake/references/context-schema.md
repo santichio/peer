@@ -27,11 +27,11 @@ It has two parts:
 
 ### Status-field lookup, in detail
 
-GitHub Projects v2 returns each project field as a top-level key on the item,
-keyed by **display name**. So if your status field is named `Status` in the
-project UI, each item in `gh project item-list --format json` carries a
-`"status": "<value>"` key. The intake skill compares
-`item[status_field.lower().replace(' ', '')]` against `todo_value` literally.
+GitHub Projects v2 exposes each project field by its **display name**. The intake
+skill lists items with the GitHub MCP tool `projects_list` (its
+`list_project_items` operation) and reads each item's single-select **status**
+field named by `status_field`, comparing its value against `todo_value`
+**literally**. Match the exact string, including case and any emoji.
 
 If you renamed the status field (e.g. `Stage`), set `status_field: Stage`.
 If your "To Do" option is labelled with an emoji (e.g. `📋 To Do`), set

@@ -1,6 +1,6 @@
 # Open PR Agent
 
-Open the pull request, fill the template, link the issue, mark it ready, and stop for review.
+Open the pull request via the GitHub MCP server, fill the template, link the issue, and stop for review.
 
 ## Role
 
@@ -39,48 +39,35 @@ For hotfix/release, a second PR `main → develop` is required after merge — s
 If the repo has a PR template (`.github/pull_request_template.md`), fill that template
 verbatim — do not invent a new structure.
 
-### Step 3 — Create the PR as a draft
+### Step 3 — Create the PR via the GitHub MCP server
 
-```bash
-gh pr create \
-  --base <pr-base> \
-  --head "$(git rev-parse --abbrev-ref HEAD)" \
-  --title "<type>(<scope>): <description>" \
-  --body "$(cat <<'EOF'
-## What & why
-<one or two paragraphs>
+Resolve `owner`/`repo` from the origin remote (`git remote get-url origin`), then
+call the GitHub MCP tool **`create_pull_request`**:
 
-## Testing
-- <command run>
-- <screenshot or recording for UI>
+- `owner`, `repo` — from the origin remote.
+- `base` — the PR base from Step 1.
+- `head` — the current branch (`git rev-parse --abbrev-ref HEAD`).
+- `title` — `<type>(<scope>): <description>`.
+- `body` — the filled template, e.g.:
 
-Closes EG-023
-EOF
-)" \
-  --draft
-```
+  ```
+  ## What & why
+  <one or two paragraphs>
 
-### Step 4 — Mark ready
+  ## Testing
+  - <command run>
+  - <screenshot or recording for UI>
 
-After CI starts and the body looks correct:
+  Closes EG-023
+  ```
+- `draft` — `false` (open ready for review directly).
 
-```bash
-gh pr ready
-```
+### Step 4 — Report and stop
 
-### Step 5 — Report and stop
-
-```bash
-gh pr view --web   # or echo the URL from gh pr create's output
-```
-
-Report the URL and **STOP**. The merge command is shown for the human reviewer's reference
-only:
-
-```bash
-# performed by a human reviewer after approval — do not run from this agent
-gh pr merge --no-ff --delete-branch
-```
+Report the PR URL from the `create_pull_request` result and **STOP**. The merge is
+performed by a human reviewer after approval — do **not** merge from this agent.
+The reviewer merges from the GitHub PR UI (`Merge pull request`, no fast-forward,
+delete branch), or an automated flow may call the `merge_pull_request` MCP tool.
 
 For a first-pass reviewer perspective, the [`pr-review-assistant`](../agents/pr-review-assistant.md)
 agent can preview likely review feedback before a human takes over.
@@ -90,7 +77,7 @@ agent can preview likely review feedback before a human takes over.
 Report:
 - PR URL.
 - PR base and head.
-- Draft → ready transition confirmation.
+- Confirmation the PR opened ready for review (not draft).
 - Reminder: hotfix/release requires merge-back to `develop` after merge.
 
 ## Guardrails

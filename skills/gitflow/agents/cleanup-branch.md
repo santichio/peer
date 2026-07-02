@@ -18,9 +18,9 @@ the local and remote branch, and — for hotfix/release — open the second PR t
 
 ### Step 1 — Confirm the PR merged
 
-```bash
-gh pr view <branch> --json state,mergedAt,mergeCommit
-```
+Resolve `owner`/`repo` from the origin remote, then read the PR via the GitHub MCP
+tool **`pull_request_read`** (by branch/head) and check its `state`, `mergedAt`,
+and `mergeCommit`.
 
 If state is not `MERGED`, stop. Cleanup before merge throws away work.
 
@@ -55,19 +55,21 @@ After the PR into `main` merges and the release is tagged, `main` must be merged
 [`git-versioning-releases`](../references/git-versioning-releases.md) and
 [`git-branching-strategy`](../references/git-branching-strategy.md).
 
-Open a second PR:
+Open a second PR. Create the merge-back branch with `git`, then call the GitHub
+MCP tool **`create_pull_request`** for the PR:
 
 ```bash
 git switch main && git pull --ff-only origin main
 git switch -c chore/mergeback-<version-or-issue> main
-gh pr create \
-  --base develop \
-  --head "$(git rev-parse --abbrev-ref HEAD)" \
-  --title "chore: merge main back into develop after <version-or-issue>" \
-  --body "Merge-back of <PR-URL>. No new changes." \
-  --draft
-gh pr ready
+git push -u origin HEAD
 ```
+
+Then call `create_pull_request` with:
+- `owner`, `repo` — from the origin remote.
+- `base` — `develop`; `head` — the merge-back branch.
+- `title` — `chore: merge main back into develop after <version-or-issue>`.
+- `body` — `Merge-back of <PR-URL>. No new changes.`
+- `draft` — `false`.
 
 If the merge-back PR has conflicts, resolve them on the merge-back branch — never on
 `develop` directly.

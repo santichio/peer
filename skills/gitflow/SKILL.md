@@ -22,8 +22,12 @@ from memory.
 
 Verify before starting:
 
-- `git --version` and `gh --version` succeed.
-- `gh auth status` shows an authenticated account.
+- `git --version` succeeds.
+- The **GitHub MCP server is connected** — the GitHub MCP tools (e.g.
+  `create_pull_request`, `pull_request_read`) are available. If not, connect it:
+  hosted `https://api.githubcopilot.com/mcp/` (OAuth/PAT), or the local
+  `ghcr.io/github/github-mcp-server` Docker image. GitHub is reached only through
+  these MCP tools.
 - A remote named `origin` exists (`git remote get-url origin`).
 - You are **not** about to commit on a protected branch (`main`, `develop`).
 - The working tree state is understood (`git status`); stash unrelated changes if needed.
@@ -52,7 +56,7 @@ update, and the tag.
 | 1 | Create the support branch from the correct base | [`agents/create-branch.md`](agents/create-branch.md) |
 | 2 | Run quality gates and commit atomic Conventional Commits | [`agents/commit-changes.md`](agents/commit-changes.md) |
 | 3 | Push the branch with upstream tracking | [`agents/push-branch.md`](agents/push-branch.md) |
-| 4 | Open the PR (draft → ready), link the issue, **stop for review** | [`agents/open-pr.md`](agents/open-pr.md) |
+| 4 | Open the PR (ready for review), link the issue, **stop for review** | [`agents/open-pr.md`](agents/open-pr.md) |
 | 5 | After merge: cleanup, delete branch, merge-back (hotfix/release) | [`agents/cleanup-branch.md`](agents/cleanup-branch.md) |
 
 For releases, [`agents/release-workflow.md`](agents/release-workflow.md) chains all six
@@ -62,13 +66,9 @@ plus the version bump, changelog, tag, and merge-back PR.
 
 After Stage 4 the PR is ready and CI is running. **Report the PR URL and STOP.** Do not
 approve or merge — that's a human decision per
-[`git-code-review`](references/git-code-review.md). The merge command is shown
-for the reviewer's reference only:
-
-```bash
-# performed by a human reviewer, after approval — shown for reference only
-gh pr merge --no-ff --delete-branch
-```
+[`git-code-review`](references/git-code-review.md). The reviewer merges from the
+GitHub PR UI after approval (`Merge pull request`, no fast-forward, delete the
+branch); an automated flow may instead call the `merge_pull_request` MCP tool.
 
 The [`pr-review-assistant`](agents/pr-review-assistant.md) agent can produce a
 first-pass review before a human takes over; it never approves.
@@ -88,7 +88,7 @@ first-pass review before a human takes over; it never approves.
 
 ```mermaid
 flowchart TD
-    start(["Task assigned"]) --> pre{"Preconditions OK?\ngit · gh auth · origin"}
+    start(["Task assigned"]) --> pre{"Preconditions OK?\ngit · GitHub MCP · origin"}
     pre -- no --> stop1["Report & stop"]
     pre -- yes --> sync["agents/sync-local"]
     sync --> branch["agents/create-branch"]

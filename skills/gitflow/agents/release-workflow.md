@@ -99,15 +99,20 @@ Tag format is `v<SemVer>` per
 [`git-versioning-releases`](../references/git-versioning-releases.md). Tags are
 **never deleted or moved** once pushed — to withdraw, ship a new release.
 
-### Stage 8 — Publish release notes
+### Stage 8 — Publish release notes (deferred)
+
+The annotated tag pushed in Stage 7 is the source of truth for the release. The
+GitHub MCP server has **no release-creation tool**, so publishing the GitHub
+**Release** object is a **deferred manual step** (or a follow-up): from the pushed
+`v<X.Y.Z>` tag, create the Release in the GitHub UI using the matching
+`CHANGELOG.md` section as the notes. Extract that section with:
 
 ```bash
-gh release create v<X.Y.Z> \
-  --title "v<X.Y.Z>" \
-  --notes-file <(awk "/^## \\[<X.Y.Z>\\]/,/^## \\[/{print}" CHANGELOG.md | sed '$d')
+awk "/^## \\[<X.Y.Z>\\]/,/^## \\[/{print}" CHANGELOG.md | sed '$d'
 ```
 
-Adjust if release notes should differ from the changelog section.
+The release is functionally complete at the pushed tag; the Release object is
+presentation only. Adjust the notes if they should differ from the changelog.
 
 ### Stage 9 — Merge-back into `develop`
 

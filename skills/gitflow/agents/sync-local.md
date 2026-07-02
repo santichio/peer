@@ -22,10 +22,13 @@ Run each; abort and report the first failure:
 
 ```bash
 git --version
-gh --version
-gh auth status
 git remote get-url origin
 ```
+
+Then confirm the **GitHub MCP server is connected** — the GitHub MCP tools (e.g.
+`create_pull_request`, `pull_request_read`) must be available. If they are not,
+stop and ask the user to connect it (hosted `https://api.githubcopilot.com/mcp/`
+with OAuth/PAT, or the local `ghcr.io/github/github-mcp-server` Docker image).
 
 ### Step 2 — Working tree check
 
@@ -59,7 +62,7 @@ judgment.
 Report:
 - Base branch and the commit it now points at (`git rev-parse --short HEAD`).
 - Working tree state (clean / stashed).
-- Confirmation that origin is reachable and authenticated.
+- Confirmation that origin is reachable and the GitHub MCP server is connected.
 
 Hand off to [`create-branch`](create-branch.md) (for new work) or directly to
 [`commit-changes`](commit-changes.md) (if the support branch already exists).
@@ -69,4 +72,5 @@ Hand off to [`create-branch`](create-branch.md) (for new work) or directly to
 - Never `git pull` without `--ff-only` on a base branch.
 - Never `git reset --hard` or `git checkout -- .` to "clean" a working tree.
 - Never `git push --force` from this agent.
-- If `gh auth status` fails, stop and ask the user to run `gh auth login` themselves.
+- If the GitHub MCP server is not connected, stop and ask the user to connect it
+  (hosted URL or local Docker) themselves — do not fall back to any CLI.

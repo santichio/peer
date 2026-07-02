@@ -1,6 +1,6 @@
-# `.peer/context.md` — schema
+# `peer/context.md` — schema
 
-`.peer/context.md` is the per-repo configuration the `peer-intake` skill reads
+`peer/context.md` is the per-repo configuration the `peer-intake` skill reads
 to know **which GitHub Project** to pull from and **how to describe the
 product** in every PRD it generates. One file, one repo, checked into source
 control alongside the project it describes.
@@ -22,7 +22,7 @@ It has two parts:
 | `github.project_number` | yes | integer | The Projects v2 number from the project URL (`github.com/<owner>/projects/<N>`). |
 | `github.status_field` | yes | string | Display name of the single-select status field on the project (e.g. `Status`). The skill matches this name literally. |
 | `github.todo_value` | yes | string | The option value that means "ready for PRD" (e.g. `To Do`, `Ready`, `Backlog ✅`). Matched literally — copy it exactly as it appears in the project. |
-| `prd.output_dir` | optional | string | Directory PRDs are written to. Default `.peer/prd`. Relative to repo root. |
+| `prd.output_dir` | optional | string | Directory PRDs are written to. Default `peer/prd`. Relative to repo root. |
 | `prd.filename_pattern` | optional | string | Filename template. Default `{issue_number}-{slug}.md`. Tokens: `{issue_number}`, `{slug}`, `{short_id}` (first 7 chars of the project item id, used for draft items with no linked issue). |
 
 ### Status-field lookup, in detail
@@ -39,7 +39,7 @@ If your "To Do" option is labelled with an emoji (e.g. `📋 To Do`), set
 
 ## Paste-ready template
 
-Save this as `.peer/context.md` at the repo root and fill in the placeholders:
+Save this as `peer/context.md` at the repo root and fill in the placeholders:
 
 ```markdown
 ---
@@ -50,7 +50,7 @@ github:
   status_field: Status
   todo_value: "To Do"
 prd:
-  output_dir: .peer/prd
+  output_dir: peer/prd
   filename_pattern: "{issue_number}-{slug}.md"
 ---
 
@@ -72,13 +72,13 @@ prd:
      Anything you'd otherwise have to repeat in every PRD's Technical Considerations. -->
 ```
 
-## Why this file lives in `.peer/` (not the repo root)
+## Why this file lives in `peer/` (not the repo root)
 
-`.peer/` collects every artifact the `peer-*` skills produce or consume:
+`peer/` collects every artifact the `peer-*` skills produce or consume:
 `context.md` here, generated PRDs under `prd/`, future skills may add more.
 Keeping the convention scoped to one directory makes the contract obvious to
 collaborators and easy to `.gitignore` selectively (e.g. ignore
-`.peer/prd/draft-*` but commit reviewed PRDs).
+`peer/prd/draft-*` but commit reviewed PRDs).
 
 ## Changing the schema
 

@@ -1,13 +1,13 @@
 ---
 name: peer-intake
-description: "Convert GitHub Project 'To Do' tasks into standardized PRDs under .peer/prd/. Reads project coordinates and product context from .peer/context.md, pulls each To Do item via the GitHub CLI, asks clarifying questions when a task is thin, then writes one PRD per task using the /prd skill's section format so the output drops straight into the /ralph autonomous loop. Use this whenever the user wants to intake the backlog, groom the project board, turn tickets into PRDs, kick off sprint planning, or generate PRDs from the project board — even if they don't say 'peer-intake'."
+description: "Convert GitHub Project 'To Do' tasks into standardized PRDs under peer/prd/. Reads project coordinates and product context from peer/context.md, pulls each To Do item via the GitHub CLI, asks clarifying questions when a task is thin, then writes one PRD per task using the /prd skill's section format so the output drops straight into the /ralph autonomous loop. Use this whenever the user wants to intake the backlog, groom the project board, turn tickets into PRDs, kick off sprint planning, or generate PRDs from the project board — even if they don't say 'peer-intake'."
 user-invocable: true
 ---
 
 # Peer Backlog Intake
 
 Turn a GitHub Project backlog into a folder of standardized PRDs. One PRD per
-"To Do" task, written to `.peer/prd/`, in the same section format the
+"To Do" task, written to `peer/prd/`, in the same section format the
 [`prd`](https://github.com/santichio/peer/blob/main/skills/prd/SKILL.md) skill
 produces — so every downstream tool (notably
 [`ralph`](https://github.com/santichio/peer/blob/main/skills/ralph/SKILL.md))
@@ -27,18 +27,18 @@ Verify before starting. If any check fails, report it and stop — do not improv
 
 - `git --version` and `gh --version` succeed.
 - `gh auth status` shows an authenticated account with read access to GitHub Projects.
-- `.peer/context.md` exists at the repo root and parses (see
+- `peer/context.md` exists at the repo root and parses (see
   [`references/context-schema.md`](references/context-schema.md) for the schema).
   If the file is missing, offer to scaffold one from the template in that reference
   and stop until the user has filled in the project coordinates.
-- `.peer/prd/` exists. If it does not, create it (`mkdir -p .peer/prd`) — this is the
+- `peer/prd/` exists. If it does not, create it (`mkdir -p peer/prd`) — this is the
   one filesystem side-effect allowed before the user has confirmed anything.
 
 ## Stages
 
 | # | Stage | What it does |
 | - | --- | --- |
-| 1 | Read context | Parse `.peer/context.md` frontmatter (project coordinates) and body (product notes). |
+| 1 | Read context | Parse `peer/context.md` frontmatter (project coordinates) and body (product notes). |
 | 2 | Fetch To Do tasks | Query the configured GitHub Project, filter by status, hydrate linked issues. |
 | 3 | Pick scope | Show the list, let the user confirm or pick a subset. |
 | 4 | For each task | Skip if a PRD already exists; otherwise clarify-if-thin → draft → write. |
@@ -46,7 +46,7 @@ Verify before starting. If any check fails, report it and stop — do not improv
 
 ### Stage 1 — Read context
 
-Parse `.peer/context.md`. The YAML frontmatter carries the project coordinates
+Parse `peer/context.md`. The YAML frontmatter carries the project coordinates
 (`github.owner`, `github.project_number`, `github.status_field`,
 `github.todo_value`, optional `github.repo`) and PRD output settings
 (`prd.output_dir`, `prd.filename_pattern`). The body is free-form Markdown
@@ -100,7 +100,7 @@ Found N tasks with status "To Do":
 
 Then ask whether to process all of them or a subset. Default to processing all
 when the user gives a one-word confirmation; accept comma-separated indices
-("1, 3") for partial runs. Tasks whose PRD already exists in `.peer/prd/` are
+("1, 3") for partial runs. Tasks whose PRD already exists in `peer/prd/` are
 shown with an `[existing]` marker — they will be skipped in Stage 4 unless the
 user explicitly asks to overwrite (in which case overwrite only the ones they
 named, not all).
@@ -110,15 +110,15 @@ named, not all).
 For each selected task, in order:
 
 1. **Compute the target path** from `prd.filename_pattern`. Defaults:
-   - Issue-backed task → `.peer/prd/<issue_number>-<slug>.md` (e.g.
-     `.peer/prd/42-priority-field.md`).
-   - Draft task → `.peer/prd/draft-<short_id>-<slug>.md` where `short_id`
+   - Issue-backed task → `peer/prd/<issue_number>-<slug>.md` (e.g.
+     `peer/prd/42-priority-field.md`).
+   - Draft task → `peer/prd/draft-<short_id>-<slug>.md` where `short_id`
      is the first 7 chars of the project item id.
    - `<slug>` is the task title, lowercased, non-alphanumerics replaced with
      `-`, collapsed and trimmed.
 
 2. **Skip if it already exists** (and was not explicitly nominated for
-   overwrite). Log one line: `skip: .peer/prd/42-priority-field.md (already exists)`.
+   overwrite). Log one line: `skip: peer/prd/42-priority-field.md (already exists)`.
 
 3. **Decide whether to clarify.** A task is "thin" if any of these hold:
    - Body is empty or under ~3 sentences.
@@ -167,7 +167,7 @@ For each selected task, in order:
    ```
 
    When drafting, weave in:
-   - The **product context** body from `.peer/context.md` (audience, tone, stack).
+   - The **product context** body from `peer/context.md` (audience, tone, stack).
    - The **issue body** and any acceptance criteria already present in it.
    - The **clarifying answers** from step 3, if any were collected.
    - Any **labels** that imply scope or layer (e.g. `backend`, `ux`) — surface
@@ -181,7 +181,7 @@ For each selected task, in order:
 
 5. **Write the file.** Use `Write`; do not `Edit` an existing file (Stage 4.2
    already enforced the skip-or-overwrite decision). Log one line:
-   `wrote: .peer/prd/42-priority-field.md`.
+   `wrote: peer/prd/42-priority-field.md`.
 
 ### Stage 5 — Report
 
@@ -195,7 +195,7 @@ peer-intake complete:
 ```
 
 List the failures with one-line reasons. Do not delete or modify anything in
-`.peer/prd/` from previous runs.
+`peer/prd/` from previous runs.
 
 ## Guardrails
 
@@ -205,7 +205,7 @@ List the failures with one-line reasons. Do not delete or modify anything in
 - **Never overwrite an existing PRD without the user naming it explicitly.**
   Re-runs are common; preserving prior drafts (and the human edits on top of
   them) is the whole point of the skip behavior.
-- **Never invent project coordinates.** If `.peer/context.md` is missing or
+- **Never invent project coordinates.** If `peer/context.md` is missing or
   incomplete, stop and point at
   [`references/context-schema.md`](references/context-schema.md).
 - **Surface fetch failures; don't paper over them.** A 404 on `gh issue view`
@@ -216,19 +216,19 @@ List the failures with one-line reasons. Do not delete or modify anything in
 
 ```mermaid
 flowchart TD
-    start(["User invokes /peer-intake"]) --> pre{"Preconditions OK?\ngit · gh auth · .peer/context.md"}
+    start(["User invokes /peer-intake"]) --> pre{"Preconditions OK?\ngit · gh auth · peer/context.md"}
     pre -- no --> stop1["Report missing piece & stop"]
-    pre -- yes --> ctx["Stage 1 — Read .peer/context.md"]
+    pre -- yes --> ctx["Stage 1 — Read peer/context.md"]
     ctx --> fetch["Stage 2 — gh project item-list\nfilter by status_field=todo_value\nhydrate issues"]
     fetch --> pick["Stage 3 — Show list,\nuser picks scope"]
     pick --> loop{"Next task?"}
     loop -- no --> report["Stage 5 — Report wrote/skipped/failed"]
-    loop -- yes --> exists{"PRD already in .peer/prd/?"}
+    loop -- yes --> exists{"PRD already in peer/prd/?"}
     exists -- yes --> skip["Log skip"] --> loop
     exists -- no --> thin{"Task body thin?"}
     thin -- yes --> ask["Ask 3-5 lettered questions"] --> draft
     thin -- no --> draft["Draft PRD using /prd section list"]
-    draft --> write["Write .peer/prd/&lt;file&gt;.md"] --> loop
+    draft --> write["Write peer/prd/&lt;file&gt;.md"] --> loop
 ```
 
 ## Related references
@@ -236,4 +236,4 @@ flowchart TD
 - [`prd`](https://github.com/santichio/peer/blob/main/skills/prd/SKILL.md) — canonical PRD section list and writing rules; this skill reproduces them, not redefines them.
 - [`ralph`](https://github.com/santichio/peer/blob/main/skills/ralph/SKILL.md) — converts a PRD to `prd.json` for the autonomous loop; PRDs written here drop straight into it.
 - [`gitflow`](https://github.com/santichio/peer/blob/main/skills/gitflow/SKILL.md) — the precondition pattern and "stop and report" discipline this skill borrows.
-- [`references/context-schema.md`](references/context-schema.md) — `.peer/context.md` field-by-field spec and paste-ready template.
+- [`references/context-schema.md`](references/context-schema.md) — `peer/context.md` field-by-field spec and paste-ready template.

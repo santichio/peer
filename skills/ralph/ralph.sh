@@ -2,7 +2,7 @@
 #
 # id: ralph
 # description: Long-running AI agent loop that runs amp or Claude Code over a PRD until it signals completion.
-# version: 1.0.0
+# version: 1.1.0
 # owner: gabriel@santich.io
 #
 # Ralph Wiggum - Long-running AI agent loop
@@ -40,10 +40,13 @@ if [[ "$TOOL" != "amp" && "$TOOL" != "claude" ]]; then
   exit 1
 fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PRD_FILE="$SCRIPT_DIR/prd.json"
-PROGRESS_FILE="$SCRIPT_DIR/progress.txt"
-ARCHIVE_DIR="$SCRIPT_DIR/archive"
-LAST_BRANCH_FILE="$SCRIPT_DIR/.last-branch"
+# Runtime state lives under the repo's peer/ dir, not inside the skill bundle.
+PEER_DIR="$(git rev-parse --show-toplevel 2>/dev/null || pwd)/peer/ralph"
+mkdir -p "$PEER_DIR"
+PRD_FILE="$PEER_DIR/prd.json"
+PROGRESS_FILE="$PEER_DIR/progress.txt"
+ARCHIVE_DIR="$PEER_DIR/archive"
+LAST_BRANCH_FILE="$PEER_DIR/.last-branch"
 
 # Archive previous run if branch changed
 if [ -f "$PRD_FILE" ] && [ -f "$LAST_BRANCH_FILE" ]; then
